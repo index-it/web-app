@@ -11,13 +11,20 @@ import {Form} from "@/components/ui/form"
 import {useForm} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 import {FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
-import {IndexApiClient} from "@/lib/services/IndexApiClient";
+import {IxApiClient} from "@/lib/services/IxApiClient";
+import {useToast} from "@/components/ui/use-toast";
+import {IxApiException} from "@/lib/services/IxApiException";
+import {IxWelcomeAction} from "@/lib/models/index/IxWelcomeAction";
+import {useRouter} from "next/navigation";
 
 const FormSchema = z.object({
   email: z.string().email('You must input a valid email address')
 })
 
 export default function EmailAuthPage() {
+  const router = useRouter()
+  const { toast } = useToast()
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -26,14 +33,17 @@ export default function EmailAuthPage() {
   })
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    const welcomeAction = await IndexApiClient.getWelcomeAction(data.email)
+    const welcomeAction = await IxApiClient.getWelcomeAction(data.email)
 
-    if (welcomeAction === null) {
-
-    } else if (welcomeAction === WelcomeAction.LOGIN) {
-
-    } else if (welcomeAction === WelcomeAction.REGISTER) {
-
+    if (welcomeAction === IxApiException.UNKNOWN) {
+      toast({
+        description: welcomeAction,
+        variant: "destructive"
+      })
+    } else if (welcomeAction === IxWelcomeAction.LOGIN) {
+      router.push("/auth/login?email=" + data.email)
+    } else if (welcomeAction === IxWelcomeAction.REGISTER) {
+      router.push("/auth/register?email=" + data.email)
     }
   }
 
@@ -65,11 +75,10 @@ export default function EmailAuthPage() {
             )}
           />
           <div className="flex gap-2">
-            <Link href="/auth/welcome" className={buttonVariants({variant: "secondary"})}>
+            <Link href="/auth/welcome" prefetch={true} className={buttonVariants({variant: "secondary"})}>
               <Icon icon="material-symbols:arrow-back-rounded" className="size-5"/>
             </Link>
             <Button type="submit" className={buttonVariants() + " grow"}>Continue with email</Button>
-
           </div>
         </form>
       </Form>
