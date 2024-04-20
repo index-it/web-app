@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from 'react';
 import { Icon as RealIcon, IconProps } from '@iconify/react';
 

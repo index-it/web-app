@@ -1,12 +1,18 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
+import {Button, buttonVariants} from "@/components/ui/button";
 import Image from "next/image";
 import {Icon} from "@/components/ui/icon";
+import Script from "next/script";
+import Link from "next/link";
 
 export default function WelcomePage() {
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full px-4">
+    <>
+      {/* Google OAuth script */}
+      <Script
+        src="https://accounts.google.com/gsi/client"
+        strategy="afterInteractive"
+      />
+
       {/* Logo and welcome text */}
       <Image
         src="/logo.png"
@@ -23,16 +29,16 @@ export default function WelcomePage() {
       <div className="flex flex-col gap-2 mt-8">
         <Button className="gap-2 justify-start">
           <Icon icon="logos:google-icon" className="size-4" />
-          Login with Google
+          Continue with Google
         </Button>
-        <Button className="gap-2 justify-start">
+        <Link href="/auth/email" className={buttonVariants() + " gap-2 justify-start"}>
           <Icon icon="material-symbols:mail-rounded" className="size-4" />
-          Login with email
-        </Button>
+          Continue with email
+        </Link>
       </div>
 
       {/* Terms and conditions */}
       <p className="text-xs text-center mt-6">By using Index you agree to our <a href="https://index-it.app/terms" target="_blank" className="text-link">Terms of Service</a> and <a href="https://index-it.app/terms" target="_blank" className="text-link">Privacy Policy.</a></p>
-    </div>
+    </>
   );
 }
