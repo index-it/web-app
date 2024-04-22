@@ -18,6 +18,7 @@ import {IxWelcomeAction} from "@/lib/models/index/IxWelcomeAction";
 import {useRouter} from "next/navigation";
 import { useState } from "react";
 import {Spinner} from "@/components/ui/spinner";
+import {StorageConstants} from "@/lib/services/StorageConstants";
 
 const FormSchema = z.object({
   email: z.string().email('You must input a valid email address')
@@ -37,7 +38,9 @@ export default function EmailAuthPage() {
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setLoading(true)
-    const welcomeAction = await IxApiClient.getWelcomeAction(data.email)
+
+    const email = data.email
+    const welcomeAction = await IxApiClient.getWelcomeAction(email)
 
     if (welcomeAction === IxApiException.UNKNOWN) {
       toast({
@@ -45,9 +48,11 @@ export default function EmailAuthPage() {
         variant: "destructive"
       })
     } else if (welcomeAction === IxWelcomeAction.LOGIN) {
-      router.push("/auth/login?email=" + data.email)
+      sessionStorage.setItem(StorageConstants.AUTH_EMAIL, email)
+      router.push("/auth/login")
     } else if (welcomeAction === IxWelcomeAction.REGISTER) {
-      router.push("/auth/register?email=" + data.email)
+      sessionStorage.setItem(StorageConstants.AUTH_EMAIL, email)
+      router.push("/auth/register")
     }
 
     setLoading(false)
@@ -67,7 +72,7 @@ export default function EmailAuthPage() {
       <p className="text-2xl font-semibold text-center mt-4">Insert your email to get started</p>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2 mt-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2 mt-8 w-full sm:max-w-sm">
           <FormField
             control={form.control}
             name="email"
@@ -80,7 +85,7 @@ export default function EmailAuthPage() {
               </FormItem>
             )}
           />
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap-reverse">
             <Link href="/auth/welcome" prefetch={true} className={buttonVariants({variant: "secondary"})}>
               <Icon icon="material-symbols:arrow-back-rounded" className="size-5"/>
             </Link>

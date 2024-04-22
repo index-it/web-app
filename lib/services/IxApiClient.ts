@@ -41,7 +41,10 @@ export class IxApiClient {
       body: JSON.stringify({
         email: email,
         password: password
-      })
+      }),
+      headers: {
+        ContentType: "application/json"
+      }
     })
 
     if (res.ok) {
@@ -73,7 +76,10 @@ export class IxApiClient {
       body: JSON.stringify({
         email: email,
         password: password
-      })
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      }
     })
 
     if (res.ok) {
