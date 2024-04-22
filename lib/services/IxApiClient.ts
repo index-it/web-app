@@ -43,7 +43,7 @@ export class IxApiClient {
         password: password
       }),
       headers: {
-        ContentType: "application/json"
+        "Content-Type": "application/json"
       }
     })
 
