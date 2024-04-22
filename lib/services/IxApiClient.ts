@@ -21,7 +21,8 @@ export class IxApiClient {
     }))
 
     if (res.ok) {
-      return await res.json()
+      const welcomeActionRes: IxWelcomeActionResponse = await res.json()
+      return welcomeActionRes.action;
     } else {
       console.error(`Failed getting welcome action: ${res.status}`)
       return IxApiException.UNKNOWN;

@@ -16,6 +16,8 @@ import {useToast} from "@/components/ui/use-toast";
 import {IxApiException} from "@/lib/services/IxApiException";
 import {IxWelcomeAction} from "@/lib/models/index/IxWelcomeAction";
 import {useRouter} from "next/navigation";
+import { useState } from "react";
+import {Spinner} from "@/components/ui/spinner";
 
 const FormSchema = z.object({
   email: z.string().email('You must input a valid email address')
@@ -24,6 +26,7 @@ const FormSchema = z.object({
 export default function EmailAuthPage() {
   const router = useRouter()
   const { toast } = useToast()
+  const [loading, setLoading] = useState(false)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -33,6 +36,7 @@ export default function EmailAuthPage() {
   })
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    setLoading(true)
     const welcomeAction = await IxApiClient.getWelcomeAction(data.email)
 
     if (welcomeAction === IxApiException.UNKNOWN) {
@@ -45,6 +49,8 @@ export default function EmailAuthPage() {
     } else if (welcomeAction === IxWelcomeAction.REGISTER) {
       router.push("/auth/register?email=" + data.email)
     }
+
+    setLoading(false)
   }
 
   return (
@@ -78,7 +84,14 @@ export default function EmailAuthPage() {
             <Link href="/auth/welcome" prefetch={true} className={buttonVariants({variant: "secondary"})}>
               <Icon icon="material-symbols:arrow-back-rounded" className="size-5"/>
             </Link>
-            <Button type="submit" className={buttonVariants() + " grow"}>Continue with email</Button>
+            <Button
+              type="submit"
+              className={buttonVariants() + " grow"}
+              disabled={loading}
+            >
+              {loading && <Spinner className="mr-2 size-4" /> }
+              Continue with Email
+            </Button>
           </div>
         </form>
       </Form>

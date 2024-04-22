@@ -17,7 +17,7 @@ const FormSchema = z.object({
   password: z.string()
 })
 
-export default function loginPage() {
+export default function LoginPage() {
   const router = useRouter()
   const { toast } = useToast()
   const searchParams = useSearchParams()
