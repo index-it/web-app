@@ -1,11 +1,11 @@
-export enum UserCreationSource {
-  GOOGLE = "google",
-  APPLE = "apple",
-  FACEBOOK = "facebook",
-  NONE = "none"
+export const enum UserCreationSource {
+  GOOGLE = 'google',
+  APPLE = 'apple',
+  FACEBOOK = 'facebook',
+  NONE = 'none'
 }
 
-export interface IxUser {
+export type IxUser = {
   id: string,
   email: string,
   creation_timestamp: number,

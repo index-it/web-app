@@ -1,8 +1,8 @@
-export enum IxWelcomeAction {
-  LOGIN = "login",
-  REGISTER = "register"
+export const enum IxWelcomeAction {
+  LOGIN = 'login',
+  REGISTER = 'register'
 }
 
-export interface IxWelcomeActionResponse {
+export type IxWelcomeActionResponse = {
   action: IxWelcomeAction;
 }

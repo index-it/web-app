@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import QueryClientContextProvider from "@/components/QueryClientContextProvider";
 import {Toaster} from "@/components/ui/toaster";
+import IxApiClientContextProvider from "@/components/IxApiClientContextProvider";
+import React from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +22,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
       <QueryClientContextProvider>
-        {children}
+        <IxApiClientContextProvider>
+          {children}
+        </IxApiClientContextProvider>
       </QueryClientContextProvider>
       <Toaster />
       </body>

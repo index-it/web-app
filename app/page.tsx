@@ -1,16 +1,15 @@
 "use client";
 
 import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {IxApiClient} from "@/lib/services/IxApiClient";
-import {IxApiException} from "@/lib/services/IxApiException";
-import {IxUser} from "@/lib/models/index/IxUser";
+import {useIxApiClient} from "@/hooks/useIxApiClient";
 
 export default function Home() {
   const queryClient = useQueryClient()
+  const ixApiClient = useIxApiClient()
 
   const query = useQuery({
     queryKey: [],
-    queryFn: IxApiClient.getLoggedInUser
+    queryFn: ixApiClient.getLoggedInUser
   })
 
   return (
