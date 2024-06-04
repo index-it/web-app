@@ -21,12 +21,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-      <QueryClientContextProvider>
         <IxApiClientContextProvider>
-          {children}
+          <QueryClientContextProvider>
+            {children}
+          </QueryClientContextProvider>
         </IxApiClientContextProvider>
-      </QueryClientContextProvider>
-      <Toaster />
+        <Toaster />
       </body>
     </html>
   );

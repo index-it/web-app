@@ -4,7 +4,6 @@ import {useQuery, useQueryClient} from "@tanstack/react-query";
 import {useIxApiClient} from "@/hooks/useIxApiClient";
 
 export default function Home() {
-  const queryClient = useQueryClient()
   const ixApiClient = useIxApiClient()
 
   const query = useQuery({

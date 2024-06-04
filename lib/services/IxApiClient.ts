@@ -33,7 +33,7 @@ export class IxApiClient {
    *
    * @return the `IxWelcomeAction` for the given email, or `IxApiException` if the request fails
    */
-  public async getWelcomeAction(email: string): Promise<IxWelcomeAction | IxApiException> {
+  public getWelcomeAction = async (email: string): Promise<IxWelcomeAction | IxApiException> => {
     const res = await fetch(`${this.baseUrl}/welcome-action?` + new URLSearchParams({
       email: email
     }))
@@ -53,7 +53,7 @@ export class IxApiClient {
    *
    * @return true if the verification email has been sent, false otherwise or `IxApiException` for any issue
    */
-  public async registerWithEmailAndPassword(email: string, password: string): Promise<boolean | IxApiException> {
+  public registerWithEmailAndPassword = async (email: string, password: string): Promise<boolean | IxApiException> => {
     const res = await fetch(`${this.baseUrl}/register`, {
       method: "POST",
       body: JSON.stringify({
@@ -88,7 +88,7 @@ export class IxApiClient {
    *
    * @return void if login was successful, `IxApiException` otherwise
    */
-  public async loginWithEmailAndPassword(email: string, password: string): Promise<void | IxApiException> {
+  public loginWithEmailAndPassword = async (email: string, password: string): Promise<void | IxApiException> => {
     const res = await fetch(`${this.baseUrl}/login`, {
       method: "POST",
       body: JSON.stringify({
@@ -127,7 +127,7 @@ export class IxApiClient {
    *
    * @return `true` if the verification email has been sent, `false` if the user is already verified
    */
-  public async sendVerificationEmail(email: string, password: string): Promise<boolean | IxApiException> {
+  public sendVerificationEmail = async (email: string, password: string): Promise<boolean | IxApiException> => {
     const data = new URLSearchParams();
     data.append("email", email);
     data.append("password", password);
@@ -162,7 +162,7 @@ export class IxApiClient {
    *
    * @return `true` if the email is verified, `false` otherwise
    */
-  public async isEmailVerified(email: string, password: string): Promise<boolean | IxApiException> {
+  public isEmailVerified = async (email: string, password: string): Promise<boolean | IxApiException> => {
     const data = new URLSearchParams();
     data.append("email", email);
     data.append("password", password);
@@ -196,7 +196,7 @@ export class IxApiClient {
    *
    * @return void if email is sent, `IxApiException` otherwise
    */
-  public async sendPasswordForgottenEmail(email: string): Promise<void | IxApiException> {
+  public sendPasswordForgottenEmail = async (email: string): Promise<void | IxApiException> => {
     const res = await fetch(`${this.baseUrl}/password-forgotten`+ new URLSearchParams({
       email: email
     }))
@@ -223,7 +223,7 @@ export class IxApiClient {
    *
    * @return `IxUser` if logged in, `IxApiException` otherwise
    */
-  public async getLoggedInUser(): Promise<IxUser | IxApiException> {
+  public getLoggedInUser = async (): Promise<IxUser | IxApiException> => {
     const res = await fetch(`${this.baseUrl}/me`, {
       credentials: "include"
     })
