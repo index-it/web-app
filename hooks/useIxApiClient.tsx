@@ -29,9 +29,9 @@ export const IxApiClientProvider = ({
   children,
 }: IxApiClientProviderProps): React.JSX.Element => {
   React.useEffect(() => {
-    client.mount()
+    console.info('Mounted Index Api client')
     return () => {
-      client.unmount()
+      console.info('Unmounted Index Api client')
     }
   }, [client])
 

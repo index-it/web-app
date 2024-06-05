@@ -1,6 +1,7 @@
-import {IxApiException} from "@/lib/services/IxApiException";
+import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
 import {IxWelcomeAction, IxWelcomeActionResponse} from "@/lib/models/index/IxWelcomeAction";
 import {IxUser} from "@/lib/models/index/IxUser";
+import {IxApiError} from "@/lib/models/index/core/IxApiError";
 
 /**
  * Client to interact with the Index API
@@ -13,27 +14,14 @@ export class IxApiClient {
   }
 
   /**
-   * Function to call when initializing the api client, mostly for react
-   */
-  public mount() {
-    console.info('Mounted Index Api client')
-  }
-
-  /**
-   * Function to call when destructing the api client, mostly for react
-   */
-  public unmount() {
-    console.info('Unmounted Index Api client')
-  }
-
-  /**
    * Fetches the welcome action for the given `email`
    *
    * @param email
    *
-   * @return the `IxWelcomeAction` for the given email, or `IxApiException` if the request fails
+   * @throws IxApiError
+   * @return the `IxWelcomeAction` for the given email
    */
-  public getWelcomeAction = async (email: string): Promise<IxWelcomeAction | IxApiException> => {
+  public getWelcomeAction = async (email: string): Promise<IxWelcomeAction> => {
     const res = await fetch(`${this.baseUrl}/welcome-action?` + new URLSearchParams({
       email: email
     }))
@@ -43,7 +31,7 @@ export class IxApiClient {
       return welcomeActionRes.action;
     } else {
       console.error(`Failed getting welcome action: ${res.status}`)
-      return IxApiException.UNKNOWN;
+      throw new IxApiError(IxApiErrorResponse.UNKNOWN);
     }
   }
 
@@ -51,9 +39,10 @@ export class IxApiClient {
    * @param email
    * @param password
    *
-   * @return true if the verification email has been sent, false otherwise or `IxApiException` for any issue
+   * @throws IxApiError
+   * @return true if the verification email has been sent, false otherwise
    */
-  public registerWithEmailAndPassword = async (email: string, password: string): Promise<boolean | IxApiException> => {
+  public registerWithEmailAndPassword = async (email: string, password: string): Promise<boolean> => {
     const res = await fetch(`${this.baseUrl}/register`, {
       method: "POST",
       body: JSON.stringify({
@@ -70,13 +59,13 @@ export class IxApiClient {
     } else {
       switch (res.status) {
         case 400: {
-          return IxApiException.REGISTER_INVALID_EMAIL_OR_PASSWORD;
+          throw new IxApiError(IxApiErrorResponse.REGISTER_INVALID_EMAIL_OR_PASSWORD);
         }
         case 403: {
-          return IxApiException.REGISTER_UNUSABLE_EMAIL;
+          throw new IxApiError(IxApiErrorResponse.REGISTER_UNUSABLE_EMAIL);
         }
         default: {
-          return IxApiException.UNKNOWN
+          throw new IxApiError(IxApiErrorResponse.UNKNOWN)
         }
       }
     }
@@ -86,9 +75,10 @@ export class IxApiClient {
    * @param email
    * @param password
    *
-   * @return void if login was successful, `IxApiException` otherwise
+   * @throws IxApiError
+   * @return void if login was successful
    */
-  public loginWithEmailAndPassword = async (email: string, password: string): Promise<void | IxApiException> => {
+  public loginWithEmailAndPassword = async (email: string, password: string): Promise<void> => {
     const res = await fetch(`${this.baseUrl}/login`, {
       method: "POST",
       body: JSON.stringify({
@@ -106,13 +96,13 @@ export class IxApiClient {
     } else {
       switch (res.status) {
         case 401: {
-          return IxApiException.LOGIN_INVALID_CREDENTIALS;
+          throw new IxApiError(IxApiErrorResponse.LOGIN_INVALID_CREDENTIALS);
         }
         case 405: {
-          return IxApiException.LOGIN_EMAIL_NOT_VERIFIED;
+          throw new IxApiError(IxApiErrorResponse.LOGIN_EMAIL_NOT_VERIFIED);
         }
         default: {
-          return IxApiException.UNKNOWN
+          throw new IxApiError(IxApiErrorResponse.UNKNOWN)
         }
       }
     }
@@ -125,9 +115,10 @@ export class IxApiClient {
    * @param email
    * @param password
    *
+   * @throws IxApiError
    * @return `true` if the verification email has been sent, `false` if the user is already verified
    */
-  public sendVerificationEmail = async (email: string, password: string): Promise<boolean | IxApiException> => {
+  public sendVerificationEmail = async (email: string, password: string): Promise<boolean> => {
     const data = new URLSearchParams();
     data.append("email", email);
     data.append("password", password);
@@ -142,13 +133,13 @@ export class IxApiClient {
     } else {
       switch (res.status) {
         case 403: {
-          return IxApiException.NOT_AUTHENTICATED;
+          throw new IxApiError(IxApiErrorResponse.NOT_AUTHENTICATED);
         }
         case 429: {
-          return IxApiException.EMAILS_RATE_LIMITED;
+          throw new IxApiError(IxApiErrorResponse.EMAILS_RATE_LIMITED);
         }
         default: {
-          return IxApiException.UNKNOWN
+          throw new IxApiError(IxApiErrorResponse.UNKNOWN)
         }
       }
     }
@@ -160,9 +151,10 @@ export class IxApiClient {
    * @param email
    * @param password
    *
+   * @throws IxApiError
    * @return `true` if the email is verified, `false` otherwise
    */
-  public isEmailVerified = async (email: string, password: string): Promise<boolean | IxApiException> => {
+  public isEmailVerified = async (email: string, password: string): Promise<boolean> => {
     const data = new URLSearchParams();
     data.append("email", email);
     data.append("password", password);
@@ -177,13 +169,13 @@ export class IxApiClient {
     } else {
       switch (res.status) {
         case 403: {
-          return IxApiException.NOT_AUTHENTICATED;
+          throw new IxApiError(IxApiErrorResponse.NOT_AUTHENTICATED);
         }
         case 404: {
           return false;
         }
         default: {
-          return IxApiException.UNKNOWN
+          throw new IxApiError(IxApiErrorResponse.UNKNOWN)
         }
       }
     }
@@ -194,10 +186,11 @@ export class IxApiClient {
    *
    * @param email
    *
-   * @return void if email is sent, `IxApiException` otherwise
+   * @throws IxApiError
+   * @return void if email is sent
    */
-  public sendPasswordForgottenEmail = async (email: string): Promise<void | IxApiException> => {
-    const res = await fetch(`${this.baseUrl}/password-forgotten`+ new URLSearchParams({
+  public sendPasswordForgottenEmail = async (email: string): Promise<void> => {
+    const res = await fetch(`${this.baseUrl}/password-forgotten?`+ new URLSearchParams({
       email: email
     }))
 
@@ -206,13 +199,13 @@ export class IxApiClient {
     } else {
       switch (res.status) {
         case 404: {
-          return IxApiException.PASSWORD_RESET_USER_NOT_FOUND;
+          throw new IxApiError(IxApiErrorResponse.PASSWORD_RESET_USER_NOT_FOUND);
         }
         case 429: {
-          return IxApiException.EMAILS_RATE_LIMITED;
+          throw new IxApiError(IxApiErrorResponse.EMAILS_RATE_LIMITED);
         }
         default: {
-          return IxApiException.UNKNOWN
+          throw new IxApiError(IxApiErrorResponse.UNKNOWN);
         }
       }
     }
@@ -221,9 +214,10 @@ export class IxApiClient {
   /**
    * Gets the currently logged-in user by using the automatically stored cookies
    *
-   * @return `IxUser` if logged in, `IxApiException` otherwise
+   * @throws IxApiError
+   * @return `IxUser` if logged in
    */
-  public getLoggedInUser = async (): Promise<IxUser | IxApiException> => {
+  public getLoggedInUser = async (): Promise<IxUser> => {
     const res = await fetch(`${this.baseUrl}/me`, {
       credentials: "include"
     })
@@ -233,10 +227,10 @@ export class IxApiClient {
     } else {
       switch (res.status) {
         case 401: {
-          return IxApiException.NOT_AUTHENTICATED;
+          throw new IxApiError(IxApiErrorResponse.NOT_AUTHENTICATED);
         }
         default: {
-          return IxApiException.UNKNOWN;
+          throw new IxApiError(IxApiErrorResponse.UNKNOWN);
         }
       }
     }

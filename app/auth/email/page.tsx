@@ -5,20 +5,20 @@ import {Button, buttonVariants} from "@/components/ui/button";
 import {Icon} from "@/components/ui/icon";
 import Link from "next/link";
 import {Input} from "@/components/ui/input";
-// import {getWelcomeAction } from "@/lib/services/IndexApiClient";
 import {z} from "zod";
 import {Form} from "@/components/ui/form"
 import {useForm} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 import {FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
-import {IxApiClient} from "@/lib/services/IxApiClient";
 import {useToast} from "@/components/ui/use-toast";
-import {IxApiException} from "@/lib/services/IxApiException";
 import {IxWelcomeAction} from "@/lib/models/index/IxWelcomeAction";
 import {useRouter} from "next/navigation";
 import { useState } from "react";
 import {Spinner} from "@/components/ui/spinner";
 import {StorageConstants} from "@/lib/services/StorageConstants";
+import {useIxApiClient} from "@/hooks/useIxApiClient";
+import {IxApiError} from "@/lib/models/index/core/IxApiError";
+import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
 
 const FormSchema = z.object({
   email: z.string().email('You must input a valid email address')
@@ -26,6 +26,7 @@ const FormSchema = z.object({
 
 export default function EmailAuthPage() {
   const router = useRouter()
+  const ixApiClient = useIxApiClient()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
 
@@ -40,22 +41,32 @@ export default function EmailAuthPage() {
     setLoading(true)
 
     const email = data.email
-    const welcomeAction = await IxApiClient.getWelcomeAction(email)
+    try {
+      const welcomeAction = await ixApiClient.getWelcomeAction(email)
 
-    if (welcomeAction === IxApiException.UNKNOWN) {
-      toast({
-        description: welcomeAction,
-        variant: "destructive"
-      })
-    } else if (welcomeAction === IxWelcomeAction.LOGIN) {
       sessionStorage.setItem(StorageConstants.AUTH_EMAIL, email)
-      router.push("/auth/login")
-    } else if (welcomeAction === IxWelcomeAction.REGISTER) {
-      sessionStorage.setItem(StorageConstants.AUTH_EMAIL, email)
-      router.push("/auth/register")
+      setLoading(false)
+
+      if (welcomeAction === IxWelcomeAction.LOGIN) {
+        router.push("/auth/login")
+      } else if (welcomeAction === IxWelcomeAction.REGISTER) {
+        router.push("/auth/register")
+      }
+    } catch (e) {
+      setLoading(false)
+
+      if (e instanceof IxApiError) {
+        toast({
+          description: e.ixApiErrorResponse,
+          variant: "destructive"
+        })
+      } else {
+        toast({
+          description: IxApiErrorResponse.UNKNOWN,
+          variant: "destructive"
+        })
+      }
     }
-
-    setLoading(false)
   }
 
   return (

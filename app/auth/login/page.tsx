@@ -1,6 +1,6 @@
 "use client";
 
-import {useRouter, useSearchParams} from "next/navigation";
+import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import {useToast} from "@/components/ui/use-toast";
 import {useForm} from "react-hook-form";
@@ -13,9 +13,11 @@ import Link from "next/link";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {Icon} from "@/components/ui/icon";
 import {Spinner} from "@/components/ui/spinner";
-import {IxApiClient} from "@/lib/services/IxApiClient";
 import {StorageConstants} from "@/lib/services/StorageConstants";
-import {IxApiException} from "@/lib/services/IxApiException";
+import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
+import {useIxApiClient} from "@/hooks/useIxApiClient";
+import {IxApiError} from "@/lib/models/index/core/IxApiError";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 const FormSchema = z.object({
   password: z.string()
@@ -23,6 +25,7 @@ const FormSchema = z.object({
 
 export default function LoginPage() {
   const router = useRouter()
+  const ixApiClient = useIxApiClient()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [visible, setVisible] = useState(false)
@@ -43,28 +46,37 @@ export default function LoginPage() {
     } else {
       setEmail(email)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setLoading(true)
 
     const password = data.password
-    const user = await IxApiClient.loginWithEmailAndPassword(email, password)
-
-    if (user === null) {
+    try {
+      await ixApiClient.loginWithEmailAndPassword(email, password)
+      setLoading(false)
       router.push("/")
-    } else if (user === IxApiException.LOGIN_EMAIL_NOT_VERIFIED) {
-      sessionStorage.setItem(StorageConstants.AUTH_PASSWORD, password)
-      router.push("/auth/verify-email")
-    } else {
-      toast({
-        description: user,
-        variant: "destructive"
-      })
-    }
+    } catch (e) {
+      setLoading(false)
 
-    setLoading(false)
+      if (e instanceof IxApiError) {
+        if (e.ixApiErrorResponse == IxApiErrorResponse.LOGIN_EMAIL_NOT_VERIFIED) {
+          sessionStorage.setItem(StorageConstants.AUTH_PASSWORD, password)
+          router.push("/auth/verify-email")
+        } else {
+          toast({
+            description: e.ixApiErrorResponse,
+            variant: "destructive"
+          })
+        }
+      } else {
+        toast({
+          description: IxApiErrorResponse.UNKNOWN,
+          variant: "destructive"
+        })
+      }
+    }
   }
 
   return (
@@ -78,7 +90,7 @@ export default function LoginPage() {
         draggable={false}
       />
 
-      <p className="text-2xl font-semibold text-center mt-4">Insert your email to get started</p>
+      <p className="text-2xl font-semibold text-center mt-4">Insert your password to login</p>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2 mt-8 w-full sm:max-w-sm">
@@ -109,7 +121,6 @@ export default function LoginPage() {
               </FormItem>
             )}
           />
-          {/* TODO: Forgot password button */}
           <div className="flex gap-2 max-w-full flex-wrap-reverse">
             <Link href="/auth/email" className={buttonVariants({variant: "secondary"})}>
               <Icon icon="material-symbols:arrow-back-rounded" className="size-5"/>
@@ -123,6 +134,47 @@ export default function LoginPage() {
               Login
             </Button>
           </div>
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <p className="underline text-end opacity-40 text-sm">I forgot my password</p>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Forgot your password?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  We can send you an email with instructions on how to reset it!
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={ async () => {
+                    try {
+                      await ixApiClient.sendPasswordForgottenEmail(email)
+                      toast({
+                        description: `We have sent an email to ${email} with instructions on how to reset the password!`,
+                        variant: 'default'
+                      })
+                    } catch(e) {
+                      if (e instanceof IxApiError) {
+                        toast({
+                          description: e.ixApiErrorResponse,
+                          variant: "destructive"
+                        })
+                      } else {
+                        toast({
+                          description: IxApiErrorResponse.UNKNOWN,
+                          variant: "destructive"
+                        })
+                      }
+                    }
+                  }}
+                >
+                  Send me the email
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </form>
       </Form>
     </>

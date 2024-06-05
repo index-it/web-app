@@ -1,4 +1,4 @@
-export const enum IxApiException {
+export const enum IxApiErrorResponse {
   UNKNOWN = 'Something went wrong, please try again later',
   NOT_AUTHENTICATED = 'You are not logged in',
 
