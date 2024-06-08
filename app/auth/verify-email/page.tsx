@@ -12,6 +12,7 @@ import {useIxApiClient} from "@/hooks/useIxApiClient";
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
 import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
 import { redirectOnLoginSuccess } from "@/lib/utils";
+import { clearInterval } from "timers";
 
 export default function EmailAuthPage() {
   const router = useRouter()
@@ -21,6 +22,36 @@ export default function EmailAuthPage() {
   const [checkLoading, setCheckLoading] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+
+  async function checkForVerification() {
+    try {
+      setCheckLoading(true)
+      const verified = await ixApiClient.isEmailVerified(email, password)
+
+      setCheckLoading(false)
+      if (verified) {
+        redirectOnLoginSuccess()
+      } else {
+        toast({
+          description: 'Your email is not verified yet, check your inbox',
+          variant: "default"
+        })
+      }
+    } catch(e) {
+      setCheckLoading(false)
+      if (e instanceof IxApiError) {
+        toast({
+          description: e.ixApiErrorResponse,
+          variant: "destructive"
+        })
+      } else {
+        toast({
+          description: IxApiErrorResponse.UNKNOWN,
+          variant: "destructive"
+        })
+      }
+    }
+  }
 
   useEffect(() => {
     const email = sessionStorage.getItem(StorageConstants.AUTH_EMAIL)
@@ -37,10 +68,12 @@ export default function EmailAuthPage() {
     } else {
       setPassword(password)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  // TODO: Use effect to check for email verification in the background, remember to return a lambda to cancel the created interval
+    const interval = setInterval(checkForVerification, 10000)
+
+    return () => { clearInterval(interval) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -105,35 +138,7 @@ export default function EmailAuthPage() {
         <Button
             className="grow"
             disabled={checkLoading}
-            onClick={async () => {
-              try {
-                setCheckLoading(true)
-                const verified = await ixApiClient.isEmailVerified(email, password)
-
-                setCheckLoading(false)
-                if (verified) {
-                  redirectOnLoginSuccess()
-                } else {
-                  toast({
-                    description: 'Your email is not verified yet, check your inbox',
-                    variant: "default"
-                  })
-                }
-              } catch(e) {
-                setCheckLoading(false)
-                if (e instanceof IxApiError) {
-                  toast({
-                    description: e.ixApiErrorResponse,
-                    variant: "destructive"
-                  })
-                } else {
-                  toast({
-                    description: IxApiErrorResponse.UNKNOWN,
-                    variant: "destructive"
-                  })
-                }
-              }
-            }}
+            onClick={checkForVerification}
           >
             {checkLoading && <Spinner className="mr-2 size-4" /> }
             I verified it!

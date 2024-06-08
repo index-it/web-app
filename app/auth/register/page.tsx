@@ -17,19 +17,7 @@ import {StorageConstants} from "@/lib/services/StorageConstants";
 import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
 import {useIxApiClient} from "@/hooks/useIxApiClient";
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
-
-const FormSchema = z.object({
-  password: z.string()
-    .min(8, 'Password must contain at least 8 characters')
-    .max(100)
-    .refine((value) => /[A-Z]/.test(value), 'Password needs at least an uppercase character, a lowercase one and a number')
-    .refine((value) => /[a-z]/.test(value), 'Password needs at least an uppercase character, a lowercase one and a number')
-    .refine((value) => /\d/.test(value), 'Password needs at least an uppercase character, a lowercase one and a number'),
-  repeatPassword: z.string()
-}).refine(data => data.password === data.repeatPassword, {
-  message: "The passwords must match",
-  path: ["repeatPassword"]
-});
+import { PasswordWithRepeatFormSchema } from "@/components/form/schemas/passwordWithRepeatFormSchema";
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -40,8 +28,8 @@ export default function RegisterPage() {
   const [repeatVisible, setRepeatVisible] = useState(false)
   const [email, setEmail] = useState("")
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof PasswordWithRepeatFormSchema>>({
+    resolver: zodResolver(PasswordWithRepeatFormSchema),
     defaultValues: {
       password: "",
       repeatPassword: ""
@@ -59,7 +47,7 @@ export default function RegisterPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof PasswordWithRepeatFormSchema>) {
     setLoading(true)
 
     const password = data.password

@@ -212,6 +212,39 @@ export class IxApiClient {
   }
 
   /**
+   * Resets the user password using a one time authentication token
+   * 
+   * @param token the token to authenticate the password reset usually passed from the email as a query parameter
+   * @param password the new password of the user
+   * @throws IxApiError
+   */
+  public resetPasswordUsingToken = async (token: string, password: string): Promise<void> => {
+    const res = await fetch(`${this.baseUrl}/reset-password?`+ new URLSearchParams({ token: token }),
+    {
+      method: "POST",
+      body: JSON.stringify({
+        password: password
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+
+    if (res.ok) {
+      return;
+    } else {
+      switch (res.status) {
+        case 400: {
+          throw new IxApiError(IxApiErrorResponse.REGISTER_INVALID_EMAIL_OR_PASSWORD);
+        }
+        default: {
+          throw new IxApiError(IxApiErrorResponse.UNKNOWN)
+        }
+      }
+    }
+  }
+
+  /**
    * Gets the currently logged-in user by using the automatically stored cookies
    *
    * @throws IxApiError
