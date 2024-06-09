@@ -2,9 +2,19 @@ import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import {StorageConstants} from "@/lib/services/StorageConstants";
 import {RedirectType, redirect} from "next/navigation";
+import { IxApiError } from "./models/index/core/IxApiError";
+import { IxApiErrorResponse } from "./services/IxApiErrorResponse";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function checkForAuthenticationError(error: Error | null): boolean {
+  if (error instanceof IxApiError && error.ixApiErrorResponse == IxApiErrorResponse.NOT_AUTHENTICATED) {
+    return true
+  } else {
+    return false
+  }
 }
 
 /**

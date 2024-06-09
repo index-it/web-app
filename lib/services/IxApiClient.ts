@@ -2,6 +2,7 @@ import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
 import {IxWelcomeAction, IxWelcomeActionResponse} from "@/lib/models/index/IxWelcomeAction";
 import {IxUser} from "@/lib/models/index/IxUser";
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
+import { IxList } from "../models/index/IxList";
 
 /**
  * Client to interact with the Index API
@@ -280,6 +281,28 @@ export class IxApiClient {
    */
   public getLoggedInUser = async (): Promise<IxUser> => {
     const res = await fetch(`${this.baseUrl}/me`, {
+      credentials: "include"
+    })
+
+    if (res.ok) {
+      return await res.json()
+    } else {
+      switch (res.status) {
+        case 401: {
+          throw new IxApiError(IxApiErrorResponse.NOT_AUTHENTICATED);
+        }
+        default: {
+          throw new IxApiError(IxApiErrorResponse.UNKNOWN);
+        }
+      }
+    }
+  }
+
+  /**
+   * @returns the lists of the logged in user, both the ones he owns and the ones he has access to as editor or viewer
+   */
+  public getLists = async (): Promise<IxList[]> => {
+    const res = await fetch(`${this.baseUrl}/lists`, {
       credentials: "include"
     })
 
