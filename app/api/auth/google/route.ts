@@ -29,7 +29,8 @@ export async function GET(request: NextRequest) {
      }
 
      try {
-      const idToken = await googleOAuthClient.exchangeCodeForIdToken(code, googleClientId, googleClientSecret, 'https://index-it.app/login/callback')
+      // postmessage reasoning: https://github.com/MomenSherif/react-oauth/issues/71
+      const idToken = await googleOAuthClient.exchangeCodeForIdToken(code, googleClientId, googleClientSecret, 'postmessage')
       return Response.json({ id_token: idToken })
     } catch(e) {
       console.error(e)

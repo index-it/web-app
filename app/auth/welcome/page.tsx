@@ -62,6 +62,25 @@ export default function WelcomePage() {
         })
       }
     },
+    onError: (errorResponse) => {
+      setGoogleLoading(false)
+      console.error('Failed authenticating via google', errorResponse)
+      toast({
+        description: IxApiErrorResponse.UNKNOWN,
+        variant: "destructive"
+      })
+    },
+    onNonOAuthError: (errorResponse) => {
+      setGoogleLoading(false)
+
+      if (errorResponse.type !== 'popup_closed') {
+        console.error('Failed authenticating via google', errorResponse)
+        toast({
+          description: IxApiErrorResponse.UNKNOWN,
+          variant: "destructive"
+        })
+      }
+    },
   });
 
   return (
@@ -86,12 +105,13 @@ export default function WelcomePage() {
               setGoogleLoading(true)
               loginWithGoogle()
             }}
+            disabled={googleLoading}
           >
             {googleLoading && <Spinner className="mr-2 size-4" /> }
             {!googleLoading && <Icon icon="logos:google-icon" className="size-4"/> }
             Continue with Google
           </Button>
-          <Link href="/auth/email" className={buttonVariants() + " gap-2 justify-start"}>
+          <Link href="/auth/email" prefetch={true} className={buttonVariants() + " gap-2 justify-start"}>
             <Icon icon="material-symbols:mail-rounded" className="size-4" />
             Continue with email
           </Link>

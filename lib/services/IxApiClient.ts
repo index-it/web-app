@@ -111,12 +111,12 @@ export class IxApiClient {
   /**
    * Logs in a user using Google OAuth
    * 
-   * @param tokenId the token id received from the google auth flow
+   * @param token_id the token id received from the google auth flow
    * @throws IxApiError
    */
-  public loginWithGoogle = async (tokenId: string): Promise<void> => {
+  public loginWithGoogle = async (token_id: string): Promise<void> => {
     const res = await fetch(`${this.baseUrl}/login-with-google?` + new URLSearchParams({
-      tokenId: tokenId
+      token_id: token_id
     }))
 
     if (res.ok) {

@@ -32,7 +32,8 @@ export class GoogleOAuthClient {
       const tokenRes: GoogleOAuthCodeExchangeResponse = await res.json()
       return tokenRes.id_token
     } else {
-      throw Error('Something went wrong exchanging the Google oauth code for an id token, response status: ' + res.status + ', response body: ' + res.body)
+      const { error, error_description } = await res.json()
+      throw Error('Something went wrong exchanging the Google oauth code for an id token, response status: ' + res.status + ', response error: ' + error + ', description: ' + error_description)
     }
   }
 }
