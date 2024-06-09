@@ -30,7 +30,7 @@ export default function WelcomePage() {
       if (idTokenResponse.ok) {
         const { id_token }: GoogleOAuthCodeExchangeApiResponse = await idTokenResponse.json()
         try {
-          ixApiClient.loginWithGoogle(id_token)
+          await ixApiClient.loginWithGoogle(id_token)
           setGoogleLoading(false)
           router.push("/")
         } catch(e) {

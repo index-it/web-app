@@ -1,41 +1,45 @@
 import { GoogleOAuthClient } from '@/lib/services/GoogleOAuthClient'
-import type { NextApiRequest, NextApiResponse } from 'next'
+import { NextRequest } from 'next/server'
  
 export type GoogleOAuthCodeExchangeApiResponse = {
   id_token: string
 }
  
-export async function GET(
-  req: NextApiRequest,
-  res: NextApiResponse<GoogleOAuthCodeExchangeApiResponse>
-) {
-  console.info(`request query ${req.query}`)
-  const code = req.query.code
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams
+  const code = searchParams.get('code')
 
-  if (code !== undefined) {
+  if (code !== null) {
      const googleOAuthClient = new GoogleOAuthClient()
      const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 
      if (googleClientId === undefined) {
       console.error('Missing NEXT_PUBLIC_GOOGLE_CLIENT_ID env variable')
-      return res.status(500)
+      return new Response('Something went wrong', {
+        status: 500
+      })
      }
 
      const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET
      if (googleClientSecret === undefined) {
       console.error('Missing GOOGLE_CLIENT_SECRET env variable')
-      return res.status(500)
+      return new Response('Something went wrong', {
+        status: 500
+      })
      }
 
      try {
-      const idToken = await googleOAuthClient.exchangeCodeForIdToken(code.toString(), googleClientId, googleClientSecret, 'https://index-it.app/login/callback')
-
-      res.status(200).json({ id_token: idToken })
+      const idToken = await googleOAuthClient.exchangeCodeForIdToken(code, googleClientId, googleClientSecret, 'https://index-it.app/login/callback')
+      return Response.json({ id_token: idToken })
     } catch(e) {
       console.error(e)
-      res.status(500)
+      return new Response('Something went wrong', {
+        status: 500
+      })
     }
   } else {
-    res.status(400)
+    return new Response('Missing code query parameter', {
+      status: 400
+    })
   }
 }
