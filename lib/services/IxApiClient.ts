@@ -109,6 +109,34 @@ export class IxApiClient {
   }
 
   /**
+   * Logs in a user using Google OAuth
+   * 
+   * @param tokenId the token id received from the google auth flow
+   * @throws IxApiError
+   */
+  public loginWithGoogle = async (tokenId: string): Promise<void> => {
+    const res = await fetch(`${this.baseUrl}/login-with-google?` + new URLSearchParams({
+      tokenId: tokenId
+    }))
+
+    if (res.ok) {
+      return;
+    } else {
+      switch (res.status) {
+        case 401: {
+          throw new IxApiError(IxApiErrorResponse.LOGIN_WITH_GOOGLE_INVALID_ID_TOKEN);
+        }
+        case 405: {
+          throw new IxApiError(IxApiErrorResponse.LOGIN_EMAIL_NOT_VERIFIED);
+        }
+        default: {
+          throw new IxApiError(IxApiErrorResponse.UNKNOWN)
+        }
+      }
+    }
+  }
+
+  /**
    * Sends an account verification email to the specified email
    * Requires the password to be provided too
    *
