@@ -13,9 +13,11 @@ import {IxApiError} from "@/lib/models/index/core/IxApiError";
 import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
 import { redirectOnLoginSuccess } from "@/lib/utils";
 import { clearInterval } from "timers";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function EmailAuthPage() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const ixApiClient = useIxApiClient()
   const { toast } = useToast()
   const [sendLoading, setSendLoading] = useState(false)
@@ -30,7 +32,7 @@ export default function EmailAuthPage() {
 
       setCheckLoading(false)
       if (verified) {
-        redirectOnLoginSuccess()
+        redirectOnLoginSuccess(queryClient)
       } else {
         toast({
           description: 'Your email is not verified yet, check your inbox',
@@ -108,7 +110,7 @@ export default function EmailAuthPage() {
                 setSendLoading(false)
 
                 if (verified) {
-                  redirectOnLoginSuccess()
+                  redirectOnLoginSuccess(queryClient)
                 } else {
                   toast({
                     description: 'We sent you another verification email!',

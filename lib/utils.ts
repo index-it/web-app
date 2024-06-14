@@ -4,6 +4,7 @@ import {StorageConstants} from "@/lib/services/StorageConstants";
 import {RedirectType, redirect} from "next/navigation";
 import { IxApiError } from "./models/index/core/IxApiError";
 import { IxApiErrorResponse } from "./services/IxApiErrorResponse";
+import { QueryClient } from "@tanstack/react-query";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -29,7 +30,8 @@ export function redirectToLogin() {
 /**
  * Redirects the user to the route he was visiting before prompted to login
  */
-export function redirectOnLoginSuccess() {
+export function redirectOnLoginSuccess(queryClient: QueryClient) {
   const previousPath = sessionStorage.getItem(StorageConstants.AUTH_REDIRECT_URI) ?? "/"
+  queryClient.invalidateQueries()
   redirect(previousPath, RedirectType.replace)
 }

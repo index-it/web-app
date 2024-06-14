@@ -10,27 +10,27 @@ import { IxListCard } from "@/components/ui/index/ix-list-card";
 export default function Home() {
   const ixApiClient = useIxApiClient()
 
-  const lists = useQuery({
+  const { isPending, isError, data, error } = useQuery({
     queryKey: ['lists'],
     queryFn: ixApiClient.getLists
   })
 
-  if (checkForAuthenticationError(lists.error)) {
+  if (checkForAuthenticationError(error)) {
     redirectToLogin()
   }
 
-  if (lists.isLoading) {
+  if (isPending) {
     return <p>Loading...</p>
   }
 
-  if (lists.error) {
-    return <p>Error: {lists.error.message}</p>
+  if (isError) {
+    return <p>Error: {error.message}</p>
   }
 
-  if (lists.data !== undefined) {
+  if (data !== undefined) {
     return <>
-      <div>
-        {lists.data.map((list) => (
+      <div className="p-4">
+        {data.map((list) => (
           <IxListCard key={list.id} name={list.name} color={list.color} icon={list.icon} />
         ))}
       </div>

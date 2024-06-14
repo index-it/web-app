@@ -18,6 +18,8 @@ import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
 import {useIxApiClient} from "@/hooks/useIxApiClient";
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { useQueryClient } from "@tanstack/react-query";
+import { redirectOnLoginSuccess } from "@/lib/utils";
 
 const FormSchema = z.object({
   password: z.string()
@@ -25,6 +27,7 @@ const FormSchema = z.object({
 
 export default function LoginPage() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const ixApiClient = useIxApiClient()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
@@ -56,7 +59,7 @@ export default function LoginPage() {
     try {
       await ixApiClient.loginWithEmailAndPassword(email, password)
       setLoading(false)
-      router.push("/")
+      redirectOnLoginSuccess(queryClient)
     } catch (e) {
       setLoading(false)
 

@@ -13,10 +13,12 @@ import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
 import { GoogleOAuthCodeExchangeApiResponse } from "@/app/api/auth/google/route";
 import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "next/navigation";
+import { redirectOnLoginSuccess } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function WelcomePage() {
   const ixApiClient = useIxApiClient()
-  const router = useRouter()
+  const queryClient = useQueryClient()
   const { toast } = useToast()
   const [googleLoading, setGoogleLoading] = useState(false)
 
@@ -32,7 +34,7 @@ export default function WelcomePage() {
         try {
           await ixApiClient.loginWithGoogle(id_token)
           setGoogleLoading(false)
-          router.push("/")
+          redirectOnLoginSuccess(queryClient)
         } catch(e) {
           setGoogleLoading(false)
           if (e instanceof IxApiError) {

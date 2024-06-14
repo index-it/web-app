@@ -1,3 +1,4 @@
+import { Sidebar } from "@/components/ui/layout/sidebar";
 import React from "react";
 
 export default function RootLayout({
@@ -6,8 +7,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <div className="flex h-full">
+      <Sidebar />
       {children}
-    </>
+    </div>
   );
 }
