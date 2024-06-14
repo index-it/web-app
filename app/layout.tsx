@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import QueryClientContextProvider from "@/components/QueryClientContextProvider";
-import {Toaster} from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/toaster";
 import IxApiClientContextProvider from "@/components/IxApiClientContextProvider";
 import React from "react";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
         <IxApiClientContextProvider>
           <QueryClientContextProvider>
             {children}
+            <ReactQueryDevtools initialIsOpen={false} />
           </QueryClientContextProvider>
         </IxApiClientContextProvider>
         <Toaster />

@@ -12,7 +12,7 @@ export function Spinner(props: SpinnerIconProps) {
   }, []);
 
   return mounted ? (
-    <RealIcon icon="fluent:spinner-ios-16-filled" className={"animate-spin " + props.className} {...( ({className, ...rest}) => rest )(props)} />
+    <RealIcon icon="fluent:spinner-ios-16-filled" className={"animate-spin " + props.className} {...(({ className, ...rest }) => rest)(props)} />
   ) : (
     <span
       style={{
@@ -20,7 +20,7 @@ export function Spinner(props: SpinnerIconProps) {
         height: props.width || 20,
       }}
     >
-      <RealIcon icon="fluent:spinner-ios-16-filled" className={"animate-spin " + props.className} {...( ({className, ...rest}) => rest )(props)} />
+      <RealIcon icon="fluent:spinner-ios-16-filled" className={"animate-spin " + props.className} {...(({ className, ...rest }) => rest)(props)} />
     </span>
   );
 }
