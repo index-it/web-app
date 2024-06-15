@@ -6,5 +6,5 @@ pnpm dev
 - [icones browser](https://icones.js.org)
 
 ### Todo
-- [ ] sidebar responsiveness
+- [x] sidebar responsiveness
 - [ ] lists homepage

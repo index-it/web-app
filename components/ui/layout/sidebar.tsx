@@ -20,10 +20,14 @@ export function Sidebar() {
   const pathname = usePathname()
   const hours = new Date().getHours()
   const greeting = hours < 12 ? "Good morning" : (hours < 18 ? "Good afternoon" : "Good evening")
+  const [desktopCollapsed, setDesktopCollapsed] = useState(false)
+  const [mobileCollapsed, setMobileCollapsed] = useState(true)
   const [selectedItem, setSelectedItem] = useState(SidebarSelection.LISTS)
   const [selectedListId, setSelectedListId] = useState<string | null>(null)
 
   useEffect(() => {
+    setMobileCollapsed(true)
+
     if (pathname.includes('/tasks')) {
       setSelectedItem(SidebarSelection.TASKS)
     } else if (pathname.includes('/logbook')) {
@@ -42,27 +46,85 @@ export function Sidebar() {
   })
 
   return (
-    <div className="flex flex-col p-4 bg-background-secondary h-full gap-6">
-      <div className="flex items-center gap-12">
-        <span className="text-lg font-semibold">{greeting}!</span>
-        <Button variant="ghost" size="icon">
+    <>
+      {mobileCollapsed && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setMobileCollapsed(false)}
+          className="sm:hidden absolute z-10 bg-background m-4"
+        >
           <Icon icon="ph:sidebar-simple" className="size-5" />
         </Button>
-      </div>
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col">
-          <SidebarItem name="Tasks" href="/tasks" selected={selectedItem == SidebarSelection.TASKS} loading={false} />
-          <SidebarItem name="Logbook" href="/logbook" selected={selectedItem == SidebarSelection.LOGBOOK} loading={false} />
-          <SidebarItem name="Settings" href="/settings" selected={false} loading={false} />
-        </div>
-        <div className="flex flex-col gap-2">
-          <SidebarItem name="Lists" href="/" selected={selectedItem == SidebarSelection.LISTS} loading={isPending} />
-          <div className="flex flex-col pl-2">
-            <SidebarListsRenderer error={error} data={data} selectedListId={selectedItem == SidebarSelection.LIST ? selectedListId : null} />
+      )}
+
+      {!mobileCollapsed && (
+        <>
+          <div className="sm:hidden fixed flex flex-col p-4 bg-background-secondary h-full gap-6 z-20">
+            <div className="flex items-center gap-12">
+              <span className="text-lg font-semibold">{greeting}!</span>
+              <Button variant="ghost" size="icon" onClick={() => setMobileCollapsed(true)}>
+                <Icon icon="ph:sidebar-simple" className="size-5" />
+              </Button>
+            </div>
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col">
+                <SidebarItem name="Tasks" href="/tasks" selected={selectedItem == SidebarSelection.TASKS} loading={false} />
+                <SidebarItem name="Logbook" href="/logbook" selected={selectedItem == SidebarSelection.LOGBOOK} loading={false} />
+                <SidebarItem name="Settings" href="/settings" selected={false} loading={false} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <SidebarItem name="Lists" href="/" selected={selectedItem == SidebarSelection.LISTS} loading={isPending} />
+                <div className="flex flex-col pl-2">
+                  <SidebarListsRenderer error={error} data={data} selectedListId={selectedItem == SidebarSelection.LIST ? selectedListId : null} />
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+
+          <div className="sm:hidden fixed min-h-screen w-screen bg-gray-300 bg-opacity-50 backdrop-blur z-10">
+
+          </div>
+        </>
+      )}
+
+      {desktopCollapsed && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setDesktopCollapsed(false)}
+          className="hidden sm:inline absolute z-10 bg-background m-4"
+        >
+          <Icon icon="ph:sidebar-simple" className="size-5" />
+        </Button>
+      )}
+
+      {!desktopCollapsed && (
+        <>
+          <div className="hidden sm:flex fixed flex-col p-4 bg-background-secondary h-full gap-6 z-20">
+            <div className="flex items-center gap-12">
+              <span className="text-lg font-semibold">{greeting}!</span>
+              <Button variant="ghost" size="icon" onClick={() => setDesktopCollapsed(true)}>
+                <Icon icon="ph:sidebar-simple" className="size-5" />
+              </Button>
+            </div>
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col">
+                <SidebarItem name="Tasks" href="/tasks" selected={selectedItem == SidebarSelection.TASKS} loading={false} />
+                <SidebarItem name="Logbook" href="/logbook" selected={selectedItem == SidebarSelection.LOGBOOK} loading={false} />
+                <SidebarItem name="Settings" href="/settings" selected={false} loading={false} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <SidebarItem name="Lists" href="/" selected={selectedItem == SidebarSelection.LISTS} loading={isPending} />
+                <div className="flex flex-col pl-2">
+                  <SidebarListsRenderer error={error} data={data} selectedListId={selectedItem == SidebarSelection.LIST ? selectedListId : null} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </>
   )
 }
 
