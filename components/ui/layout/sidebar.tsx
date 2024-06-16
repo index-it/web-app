@@ -19,7 +19,7 @@ export function Sidebar() {
   const ixApiClient = useIxApiClient()
   const pathname = usePathname()
   const hours = new Date().getHours()
-  const greeting = hours < 12 ? "Good morning" : (hours < 18 ? "Good afternoon" : "Good evening")
+  const greeting = hours < 5 ? "Good night" : (hours < 12 ? "Good morning" : (hours < 18 ? "Good afternoon" : "Good evening"))
   const [desktopCollapsed, setDesktopCollapsed] = useState(false)
   const [mobileCollapsed, setMobileCollapsed] = useState(true)
   const [selectedItem, setSelectedItem] = useState(SidebarSelection.LISTS)
@@ -91,7 +91,7 @@ export function Sidebar() {
       {desktopCollapsed && (
         <Button
           variant="ghost"
-          size="icon"
+          size="sm"
           onClick={() => setDesktopCollapsed(false)}
           className="hidden sm:inline absolute z-10 bg-background m-4"
         >
@@ -101,10 +101,10 @@ export function Sidebar() {
 
       {!desktopCollapsed && (
         <>
-          <div className="hidden sm:flex fixed flex-col p-4 bg-background-secondary h-full gap-6 z-20">
+          <div className="hidden sm:flex flex-col p-4 bg-background-secondary h-full gap-6 z-20">
             <div className="flex items-center gap-12">
-              <span className="text-lg font-semibold">{greeting}!</span>
-              <Button variant="ghost" size="icon" onClick={() => setDesktopCollapsed(true)}>
+              <span className="text-lg font-semibold whitespace-nowra">{greeting}!</span>
+              <Button variant="ghost" size="sm" onClick={() => setDesktopCollapsed(true)}>
                 <Icon icon="ph:sidebar-simple" className="size-5" />
               </Button>
             </div>
@@ -183,7 +183,7 @@ type SidebarListItemProps = {
 function SidebarListItem({ id, name, color, selected }: SidebarListItemProps) {
   return (
     <Link href={`/lists/${id}`} className={cn(selected ? "bg-gray-200" : "hover:bg-gray-200 ", "flex gap-2 items-center px-2 py-1 rounded bg-opacity-50")}>
-      <span className={`size-2 rounded-full bg-[${color}]`} />
+      <span className="size-2 rounded-full" style={{ backgroundColor: color }} />
       <span className="text-sm">{name}</span>
     </Link>
   )
