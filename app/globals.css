@@ -64,6 +64,8 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+
+    /*  */
   }
 }
 
@@ -78,6 +80,14 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  input[type="color"] {
+    @apply p-2;
+  }
+
+  input[type="color"]::-webkit-color-swatch {
+    @apply rounded border-none ; 
   }
 }
 

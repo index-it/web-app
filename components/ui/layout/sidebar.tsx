@@ -103,7 +103,7 @@ export function Sidebar() {
         <>
           <div className="hidden sm:flex flex-col p-4 bg-background-secondary h-full gap-6 z-20">
             <div className="flex items-center gap-12">
-              <span className="text-lg font-semibold whitespace-nowra">{greeting}!</span>
+              <span className="text-lg font-semibold whitespace-nowrap">{greeting}!</span>
               <Button variant="ghost" size="sm" onClick={() => setDesktopCollapsed(true)}>
                 <Icon icon="ph:sidebar-simple" className="size-5" />
               </Button>
