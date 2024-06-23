@@ -319,4 +319,46 @@ export class IxApiClient {
       }
     }
   }
+
+  /**
+   * @param name name of the list, 1-100 characters
+   * @param icon a valid emoji
+   * @param color an hex color (#000000)
+   * @param is_public a boolean indicating whether the list is public
+   * 
+   * @throws IxApiError
+   * @returns the created list
+   */
+  public createList = async (name: string, icon: string, color: string, is_public: boolean): Promise<IxList> => {
+    const res = await fetch(`${this.baseUrl}/lists`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        name: name,
+        icon: icon,
+        color: color,
+        public: is_public
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    })
+
+    if (res.ok) {
+      return await res.json()
+    } else {
+      switch (res.status) {
+        case 400: {
+          throw new IxApiError(IxApiErrorResponse.INVALID_PARAMETERS);
+        }
+        case 401: {
+          throw new IxApiError(IxApiErrorResponse.NOT_AUTHENTICATED);
+        }
+        default: {
+          throw new IxApiError(IxApiErrorResponse.UNKNOWN);
+        }
+      }
+    }
+  }
 }

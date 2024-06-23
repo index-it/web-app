@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useIxApiClient } from "@/hooks/useIxApiClient";
 import { checkForAuthenticationError, redirectToLogin } from "@/lib/utils";
 import { IxListCard } from "@/components/ui/index/ix-list-card";
@@ -21,12 +21,16 @@ import { Switch } from "@/components/ui/switch";
 import emojiData, { Emoji } from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { DialogOverlay } from "@radix-ui/react-dialog";
+import { IxApiError } from "@/lib/models/index/core/IxApiError";
+import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
+import { IxList } from "@/lib/models/index/IxList";
 
 export default function Home() {
   const ixApiClient = useIxApiClient()
+  const queryClient = useQueryClient()
   const { toast } = useToast()
+  const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
-  const [createListLoading, setCreateListLoading] = useState(false)
   const form = useForm<z.infer<typeof ListCreateFormSchema>>({
     resolver: zodResolver(ListCreateFormSchema),
     defaultValues: {
@@ -43,38 +47,38 @@ export default function Home() {
   }
 
   function onColorSelect(color: any) {
-    console.log(color)
     form.setValue("color", color.target.value);
   }
 
+  const createListMutation = useMutation({
+    mutationFn: (params: { name: string; icon: string; color: string; public: boolean }) => {
+      return ixApiClient.createList(params.name, params.icon, params.color, params.public);;
+    },
+    onError: (error, _variables, _context) => {
+      if (error instanceof IxApiError) {
+        if (error.ixApiErrorResponse == IxApiErrorResponse.NOT_AUTHENTICATED) {
+          redirectToLogin()
+        } else {
+          toast({
+            description: error.ixApiErrorResponse,
+            variant: "destructive"
+          })
+        }
+      } else {
+        toast({
+          description: IxApiErrorResponse.UNKNOWN,
+          variant: "destructive"
+        })
+      }
+    },
+    onSuccess: (data, _variables, _context) => {
+      setCreateDialogOpen(false)
+      queryClient.setQueryData(['lists'], (old: IxList[]) => [...old, data]);
+    },
+  })
+
   async function onSubmit(data: z.infer<typeof ListCreateFormSchema>) {
-    setCreateListLoading(true)
-
-    // const password = data.password
-    // try {
-    //   await ixApiClient.loginWithEmailAndPassword(email, password)
-    //   setLoading(false)
-    //   redirectOnLoginSuccess(queryClient)
-    // } catch (e) {
-    //   setLoading(false)
-
-    //   if (e instanceof IxApiError) {
-    //     if (e.ixApiErrorResponse == IxApiErrorResponse.LOGIN_EMAIL_NOT_VERIFIED) {
-    //       sessionStorage.setItem(StorageConstants.AUTH_PASSWORD, password)
-    //       router.push("/auth/verify-email")
-    //     } else {
-    //       toast({
-    //         description: e.ixApiErrorResponse,
-    //         variant: "destructive"
-    //       })
-    //     }
-    //   } else {
-    //     toast({
-    //       description: IxApiErrorResponse.UNKNOWN,
-    //       variant: "destructive"
-    //     })
-    //   }
-    // }
+    createListMutation.mutate({ name: data.name, icon: data.icon, color: data.color, public: data.public });
   }
 
   const { isPending, isError, data, error } = useQuery({
@@ -105,7 +109,7 @@ export default function Home() {
               Your tasks
             </Link>
 
-            <Dialog modal={false}>
+            <Dialog modal={false} open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm">
                   Create list
@@ -174,7 +178,7 @@ export default function Home() {
                               <FormControl className="flex items-center">
                                 <input
                                   type="color"
-                                  className={buttonVariants({ variant: "outline" })}
+                                  className={buttonVariants({ variant: "outline" }) + " cursor-pointer"}
                                   value={form.getValues().color}
                                   onChange={onColorSelect}
                                 />
@@ -206,9 +210,9 @@ export default function Home() {
                         <Button
                           type="submit"
                           className="w-min mt-4"
-                          disabled={createListLoading}
+                          disabled={createListMutation.isPending}
                         >
-                          {createListLoading && <Spinner className="mr-2 size-4" />}
+                          {createListMutation.isPending && <Spinner className="mr-2 size-4" />}
                           Create list
                         </Button>
                       </div>

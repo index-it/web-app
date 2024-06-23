@@ -1,6 +1,7 @@
 export const enum IxApiErrorResponse {
   UNKNOWN = 'Something went wrong, please try again later',
   NOT_AUTHENTICATED = 'You are not logged in',
+  INVALID_PARAMETERS = 'The request has some invalid data',
 
   REGISTER_INVALID_EMAIL_OR_PASSWORD = 'The email or password are not valid',
   REGISTER_UNUSABLE_EMAIL = 'This email cannot be used to register',
