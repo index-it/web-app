@@ -18,6 +18,15 @@ export function checkForAuthenticationError(error: Error | null): boolean {
   }
 }
 
+export function checkForAuthenticationErrors(errors: Error[]): boolean {
+  if (errors.some(error => error instanceof IxApiError && error.ixApiErrorResponse == IxApiErrorResponse.NOT_AUTHENTICATED)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+
 /**
  * Stores the current path and query in session storage and redirects the user to /auth/welcome
  */

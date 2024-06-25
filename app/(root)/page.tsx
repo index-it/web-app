@@ -24,31 +24,13 @@ import { DialogOverlay } from "@radix-ui/react-dialog";
 import { IxApiError } from "@/lib/models/index/core/IxApiError";
 import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
 import { IxList } from "@/lib/models/index/IxList";
+import { CreateListDialog } from "@/components/ui/index/create-list-dialog";
 
 export default function Home() {
   const ixApiClient = useIxApiClient()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
-  const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
-  const form = useForm<z.infer<typeof ListCreateFormSchema>>({
-    resolver: zodResolver(ListCreateFormSchema),
-    defaultValues: {
-      name: "",
-      icon: "🏀",
-      color: "#0000ff",
-      public: false
-    },
-  })
-
-  function onEmojiSelect(emoji: any) {
-    setOpenEmojiPicker(false);
-    form.setValue("icon", emoji.native);
-  }
-
-  function onColorSelect(color: any) {
-    form.setValue("color", color.target.value);
-  }
 
   const createListMutation = useMutation({
     mutationFn: (params: { name: string; icon: string; color: string; public: boolean }) => {
@@ -77,7 +59,7 @@ export default function Home() {
     },
   })
 
-  async function onSubmit(data: z.infer<typeof ListCreateFormSchema>) {
+  async function onCreateListFormSubmit(data: z.infer<typeof ListCreateFormSchema>) {
     createListMutation.mutate({ name: data.name, icon: data.icon, color: data.color, public: data.public });
   }
 
@@ -91,10 +73,12 @@ export default function Home() {
   }
 
   if (isPending) {
+    // TODO
     return <p>Loading...</p>
   }
 
   if (isError) {
+    // TODO
     return <p>Error: {error.message}</p>
   }
 
@@ -109,125 +93,21 @@ export default function Home() {
               Your tasks
             </Link>
 
-            <Dialog modal={false} open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-              <DialogTrigger asChild>
-                <Button size="sm">
-                  Create list
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Create a new list</DialogTitle>
-                  <DialogDescription>
-                    Choose a name, icon and color for your new list!
-                  </DialogDescription>
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6 pt-4 w-full">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center gap-4 space-y-0">
-                            <FormLabel className="min-w-12">Name</FormLabel>
-                            <div className="flex flex-col gap-1">
-                              <FormControl className="flex items-center">
-                                <Input
-                                  placeholder="Enter a name" {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </div>
-
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="icon"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center gap-4 space-y-0">
-                            <FormLabel className="min-w-12">Icon</FormLabel>
-                            <div className="flex flex-col gap-1">
-                              <FormControl className="flex items-center">
-                                <div className="relative">
-                                  <Dialog modal={false} open={openEmojiPicker} onOpenChange={setOpenEmojiPicker}>
-                                    <DialogTrigger asChild>
-                                      <Button variant="outline" type="button" className="w-min text-lg">{form.getValues().icon}</Button>
-                                    </DialogTrigger>
-                                    <DialogContent hideCloseButton={true} className="w-min bg-transparent border-none shadow-none">
-                                      <Picker data={emojiData} onEmojiSelect={onEmojiSelect} />
-                                    </DialogContent>
-                                  </Dialog>
-                                </div>
-
-                              </FormControl>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="color"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center gap-4 space-y-0">
-                            <FormLabel className="min-w-12">Color</FormLabel>
-                            <div className="flex flex-col gap-1">
-                              <FormControl className="flex items-center">
-                                <input
-                                  type="color"
-                                  className={buttonVariants({ variant: "outline" }) + " cursor-pointer"}
-                                  value={form.getValues().color}
-                                  onChange={onColorSelect}
-                                />
-                                {/* <Button variant="outline" type="button" className="w-min">🏀</Button> */}
-                              </FormControl>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="public"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center gap-4 space-y-0">
-                            <FormLabel className="min-w-12">Public</FormLabel>
-                            <div className="flex flex-col gap-1">
-                              <FormControl>
-                                <Switch />
-                              </FormControl>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-
-                      <div className="flex items-center justify-center">
-                        <Button
-                          type="submit"
-                          className="w-min mt-4"
-                          disabled={createListMutation.isPending}
-                        >
-                          {createListMutation.isPending && <Spinner className="mr-2 size-4" />}
-                          Create list
-                        </Button>
-                      </div>
-                    </form>
-                  </Form>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
+            <CreateListDialog
+              open={createDialogOpen}
+              setOpen={setCreateDialogOpen}
+              loading={createListMutation.isPending}
+              onCreateListFormSubmit={onCreateListFormSubmit}
+            />
           </div>
-          <div className="p-4 flex gap-4">
-            {data.map((list) => (
-              <Link href={`/lists/${list.id}`} key={list.id}>
-                <IxListCard name={list.name} color={list.color} icon={list.icon} />
-              </Link>
-            ))}
+          <div className="p-4 flex items-center justify-center">
+            <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {data.map((list) => (
+                <Link href={`/lists/${list.id}`} key={list.id}>
+                  <IxListCard name={list.name} color={list.color} icon={list.icon} />
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </>

@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { IxList } from "@/lib/models/index/IxList";
 import { Spinner } from "../spinner";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../sheet";
 
 const enum SidebarSelection {
   TASKS, LOGBOOK, LISTS, LIST
@@ -21,12 +22,12 @@ export function Sidebar() {
   const hours = new Date().getHours()
   const greeting = hours < 5 ? "Good night" : (hours < 12 ? "Good morning" : (hours < 18 ? "Good afternoon" : "Good evening"))
   const [desktopCollapsed, setDesktopCollapsed] = useState(false)
-  const [mobileCollapsed, setMobileCollapsed] = useState(true)
+  const [mobileOpen, setMobileOpen] = useState(true)
   const [selectedItem, setSelectedItem] = useState(SidebarSelection.LISTS)
   const [selectedListId, setSelectedListId] = useState<string | null>(null)
 
   useEffect(() => {
-    setMobileCollapsed(true)
+    setMobileOpen(false)
 
     if (pathname.includes('/tasks')) {
       setSelectedItem(SidebarSelection.TASKS)
@@ -47,26 +48,20 @@ export function Sidebar() {
 
   return (
     <>
-      {mobileCollapsed && (
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setMobileCollapsed(false)}
-          className="sm:hidden absolute z-10 bg-background m-4"
-        >
-          <Icon icon="ph:sidebar-simple" className="size-5" />
-        </Button>
-      )}
-
-      {!mobileCollapsed && (
-        <>
-          <div className="sm:hidden fixed flex flex-col p-4 bg-background-secondary h-full gap-6 z-20">
-            <div className="flex items-center gap-12">
-              <span className="text-lg font-semibold">{greeting}!</span>
-              <Button variant="ghost" size="icon" onClick={() => setMobileCollapsed(true)}>
-                <Icon icon="ph:sidebar-simple" className="size-5" />
-              </Button>
-            </div>
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="sm:hidden absolute z-10 bg-background m-4"
+          >
+            <Icon icon="ph:sidebar-simple" className="size-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side={"left"}>
+          <SheetHeader />
+          <div className="flex flex-col h-full gap-6 z-20">
+            <span className="text-lg font-semibold">{greeting}!</span>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col">
                 <SidebarItem name="Tasks" href="/tasks" selected={selectedItem == SidebarSelection.TASKS} loading={false} />
@@ -81,12 +76,8 @@ export function Sidebar() {
               </div>
             </div>
           </div>
-
-          <div className="sm:hidden fixed min-h-screen w-screen bg-gray-300 bg-opacity-50 backdrop-blur z-10">
-
-          </div>
-        </>
-      )}
+        </SheetContent>
+      </Sheet>
 
       {desktopCollapsed && (
         <Button
@@ -182,8 +173,8 @@ type SidebarListItemProps = {
 
 function SidebarListItem({ id, name, color, selected }: SidebarListItemProps) {
   return (
-    <Link href={`/lists/${id}`} className={cn(selected ? "bg-gray-200" : "hover:bg-gray-200 ", "flex gap-2 items-center px-2 py-1 rounded bg-opacity-50")}>
-      <span className="size-2 rounded-full" style={{ backgroundColor: color }} />
+    <Link href={`/lists/${id}`} className={cn(selected ? "bg-gray-200" : "hover:bg-gray-200 ", "flex gap-3 items-center px-2 py-1 rounded bg-opacity-50")}>
+      <span className="size-3 rounded-full" style={{ backgroundColor: color }} />
       <span className="text-sm">{name}</span>
     </Link>
   )
