@@ -10,7 +10,16 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { IxList } from "@/lib/models/index/IxList";
 import { Spinner } from "../spinner";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "../sheet";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../tooltip";
+import { Dialog, DialogTrigger } from "../dialog";
+import { CreateListDialogContent } from "../index/create-list-dialog";
+import { ListCreateFormSchema } from "@/components/form/schemas/list-create-form-schema";
+import { useCreateListMutation } from "@/hooks/useCreateListMutation";
+import { IxApiError } from "@/lib/models/index/core/IxApiError";
+import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
+import { z } from "zod";
+import { toast } from "../use-toast";
 
 const enum SidebarSelection {
   TASKS, LOGBOOK, LISTS, LIST
@@ -22,9 +31,10 @@ export function Sidebar() {
   const hours = new Date().getHours()
   const greeting = hours < 5 ? "Good night" : (hours < 12 ? "Good morning" : (hours < 18 ? "Good afternoon" : "Good evening"))
   const [desktopCollapsed, setDesktopCollapsed] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(true)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState(SidebarSelection.LISTS)
   const [selectedListId, setSelectedListId] = useState<string | null>(null)
+  const [createListDialogOpen, setCreateListDialogOpen] = useState(false)
 
   useEffect(() => {
     setMobileOpen(false)
@@ -41,13 +51,33 @@ export function Sidebar() {
     }
   }, [pathname])
 
-  const { isPending, data, error } = useQuery({
+  const { isPending: isListsPending, data: listsData, error: listsError } = useQuery({
     queryKey: ['lists'],
     queryFn: ixApiClient.getLists
   })
 
+  const createListMutation = useCreateListMutation({
+    onSuccess: (data, _variables, _context) => {
+      setCreateListDialogOpen(false)
+    },
+    onError: (error, _variables, _context) => {
+      if (error instanceof IxApiError) {
+        toast({
+          description: error.ixApiErrorResponse,
+          variant: "destructive"
+        })
+      } else {
+        toast({
+          description: IxApiErrorResponse.UNKNOWN,
+          variant: "destructive"
+        })
+      }
+    }
+  })
+
   return (
     <>
+      {/* MOBILE */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetTrigger asChild>
           <Button
@@ -62,23 +92,29 @@ export function Sidebar() {
           <SheetHeader />
           <div className="flex flex-col h-full gap-6 z-20">
             <span className="text-lg font-semibold">{greeting}!</span>
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col">
-                <SidebarItem name="Tasks" href="/tasks" selected={selectedItem == SidebarSelection.TASKS} loading={false} />
-                <SidebarItem name="Logbook" href="/logbook" selected={selectedItem == SidebarSelection.LOGBOOK} loading={false} />
-                <SidebarItem name="Settings" href="/settings" selected={false} loading={false} />
-              </div>
-              <div className="flex flex-col gap-2">
-                <SidebarItem name="Lists" href="/" selected={selectedItem == SidebarSelection.LISTS} loading={isPending} />
-                <div className="flex flex-col pl-2">
-                  <SidebarListsRenderer error={error} data={data} selectedListId={selectedItem == SidebarSelection.LIST ? selectedListId : null} />
-                </div>
-              </div>
-            </div>
+            <SidebarItems
+              selectedItem={selectedItem}
+              isListsLoading={isListsPending}
+              isCreateListPending={createListMutation.isPending}
+              createListDialogOpen={createListDialogOpen}
+              setCreateListDialogOpen={setCreateListDialogOpen}
+              onCreateListFormSubmit={(data) => createListMutation.mutate({
+                name: data.name,
+                icon: data.icon,
+                color: data.color,
+                public: data.public
+              })}
+              sidebarListsRendererProps={{
+                data: listsData,
+                error: listsError,
+                selectedListId: selectedItem == SidebarSelection.LIST ? selectedListId : null
+              }}
+            />
           </div>
         </SheetContent>
       </Sheet>
 
+      {/* DESKTOP CLOSED */}
       {desktopCollapsed && (
         <Button
           variant="ghost"
@@ -90,6 +126,7 @@ export function Sidebar() {
         </Button>
       )}
 
+      {/* DESKTOP OPENED */}
       {!desktopCollapsed && (
         <>
           <div className="hidden sm:flex flex-col p-4 bg-background-secondary h-full gap-6 z-20">
@@ -99,19 +136,24 @@ export function Sidebar() {
                 <Icon icon="ph:sidebar-simple" className="size-5" />
               </Button>
             </div>
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col">
-                <SidebarItem name="Tasks" href="/tasks" selected={selectedItem == SidebarSelection.TASKS} loading={false} />
-                <SidebarItem name="Logbook" href="/logbook" selected={selectedItem == SidebarSelection.LOGBOOK} loading={false} />
-                <SidebarItem name="Settings" href="/settings" selected={false} loading={false} />
-              </div>
-              <div className="flex flex-col gap-2">
-                <SidebarItem name="Lists" href="/" selected={selectedItem == SidebarSelection.LISTS} loading={isPending} />
-                <div className="flex flex-col pl-2">
-                  <SidebarListsRenderer error={error} data={data} selectedListId={selectedItem == SidebarSelection.LIST ? selectedListId : null} />
-                </div>
-              </div>
-            </div>
+            <SidebarItems
+              selectedItem={selectedItem}
+              isListsLoading={isListsPending}
+              isCreateListPending={createListMutation.isPending}
+              createListDialogOpen={createListDialogOpen}
+              setCreateListDialogOpen={setCreateListDialogOpen}
+              onCreateListFormSubmit={(data) => createListMutation.mutate({
+                name: data.name,
+                icon: data.icon,
+                color: data.color,
+                public: data.public
+              })}
+              sidebarListsRendererProps={{
+                data: listsData,
+                error: listsError,
+                selectedListId: selectedItem == SidebarSelection.LIST ? selectedListId : null
+              }}
+            />
           </div>
         </>
       )}
@@ -119,6 +161,66 @@ export function Sidebar() {
   )
 }
 
+// ALL SIDEBAR ITEMS
+type SidebarItemsProps = {
+  selectedItem: SidebarSelection;
+  isListsLoading: boolean;
+  isCreateListPending: boolean;
+  createListDialogOpen: boolean;
+  setCreateListDialogOpen: (open: boolean) => void;
+  onCreateListFormSubmit: (data: {
+    name: string;
+    icon: string;
+    color: string;
+    public: boolean;
+  }) => void;
+  sidebarListsRendererProps: SidebarListsRendererProps;
+}
+
+function SidebarItems({ selectedItem, isListsLoading, isCreateListPending, createListDialogOpen, setCreateListDialogOpen, onCreateListFormSubmit, sidebarListsRendererProps }: SidebarItemsProps) {
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col">
+        <SidebarItem name="Tasks" href="/tasks" selected={selectedItem == SidebarSelection.TASKS} loading={false} />
+        <SidebarItem name="Logbook" href="/logbook" selected={selectedItem == SidebarSelection.LOGBOOK} loading={false} />
+        <SidebarItem name="Settings" href="/settings" selected={false} loading={false} />
+      </div>
+      <div className="flex flex-col gap-2">
+        <Link href="/" className={cn(selectedItem == SidebarSelection.LISTS ? "bg-gray-200" : "hover:bg-gray-200", "flex items-center gap-2 justify-between rounded px-2 py-1 bg-opacity-50 transition-all")}>
+          <span>Lists</span>
+          {isListsLoading && <Spinner />}
+          {/* THIS SHIT WONT WORK :/ */}
+          {/* {!isListsLoading && (
+            <TooltipProvider delayDuration={100}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Dialog modal={false} open={createListDialogOpen} onOpenChange={setCreateListDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Icon icon="lucide:plus" className="size-5 opacity-50 hover:opacity-100" />
+                    </DialogTrigger>
+                    <CreateListDialogContent
+                      loading={isCreateListPending}
+                      onCreateListFormSubmit={onCreateListFormSubmit}
+                    />
+                  </Dialog>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Create new list</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )} */}
+        </Link>
+        <div className="flex flex-col pl-2">
+          <SidebarListsRenderer {...sidebarListsRendererProps} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
+// SINGLE SIDEBAR ITEM
 type SidebarItemProps = {
   name: string;
   href: string;
@@ -138,6 +240,8 @@ function SidebarItem({ name, href, selected, loading }: SidebarItemProps) {
   )
 }
 
+
+// SIDEBAR LISTS RENDERER
 type SidebarListsRendererProps = {
   error: Error | null;
   data: IxList[] | undefined;
@@ -157,13 +261,15 @@ function SidebarListsRenderer({ error, data, selectedListId }: SidebarListsRende
         </div>
       ));
     } else {
-      return <span className="text-sm">You don&apos;t have any list yet</span>
+      return <span className="text-sm text-muted-foreground">You don&apos;t have any list yet!</span>
     }
   }
 
   return null;
 }
 
+
+// SINGLE SIDEBAR LIST ITEM
 type SidebarListItemProps = {
   id: string;
   name: string;
