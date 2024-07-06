@@ -4,7 +4,7 @@ import "./globals.css";
 import QueryClientContextProvider from "@/components/QueryClientContextProvider";
 import { Toaster } from "@/components/ui/toaster";
 import IxApiClientContextProvider from "@/components/IxApiClientContextProvider";
-import React from "react";
+import React, { Suspense } from "react";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const inter = Inter({ subsets: ["latin"] });
@@ -25,7 +25,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <IxApiClientContextProvider>
           <QueryClientContextProvider>
-            {children}
+            <Suspense>
+              {children}
+            </Suspense>
             <ReactQueryDevtools initialIsOpen={false} />
           </QueryClientContextProvider>
         </IxApiClientContextProvider>
