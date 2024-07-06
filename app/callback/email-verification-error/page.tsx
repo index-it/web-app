@@ -12,7 +12,8 @@ export default function CallbackEmailVerificationErrorPage() {
         draggable={false}
       />
 
-      <p className="text-2xl font-semibold text-center mt-8">We couldn&apos;t verify your email :/<br /><br />Try requesting a new verification email in the app!</p>
+      <p className="text-2xl font-semibold text-center mt-8">We couldn&apos;t verify your email :/</p>
+      <p className="text-lg text-center mt-2">Try requesting a new verification email in the app!</p>
     </>
   )
 }

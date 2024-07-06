@@ -12,7 +12,9 @@ export default function CallbackEmailVerificationSuccessPage() {
         draggable={false}
       />
 
-      <p className="text-2xl font-semibold text-center mt-8">Your email has been verified!<br /><br />You can close this page now ;)</p>
+      <p className="text-2xl font-semibold text-center mt-8">Your email has been verified!</p>
+
+      <p className="text-lg text-center mt-2">You can close this page now ;)</p>
     </>
   )
 }
