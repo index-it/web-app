@@ -18,12 +18,14 @@ export default function CallbackListsAcceptInvitationPage() {
   const { toast } = useToast()
   const ixApiClient = useIxApiClient()
   const [loading, setLoading] = useState(true)
+  const [success, setSuccess] = useState(false)
 
   useEffect(() => {
     const token = searchParams.get('token')
     const email = searchParams.get('email')
 
     if (token == null || email == null) {
+      setLoading(false)
       setTimeout(() => {
         toast({
           description: 'Request invalid or expired, please request a new invitation and try again!',
@@ -37,7 +39,7 @@ export default function CallbackListsAcceptInvitationPage() {
         try {
           const list = await ixApiClient.acceptListInvitation(token);
           setLoading(false)
-          router.push(`/lists/${list}`)
+          setSuccess(true)
         } catch (e) {
           setLoading(false)
 
@@ -71,6 +73,26 @@ export default function CallbackListsAcceptInvitationPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (success) {
+    return <>
+      <Image
+        src="/logo.png"
+        width={500}
+        height={500}
+        alt="Index logo"
+        className="size-20 rounded-2xl shadow-xl border border-border select-none"
+        draggable={false}
+      />
+
+      <div className="flex items-center justify-center mt-8 gap-4">
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-2xl font-semibold text-center">List invitation accepted!</p>
+          <p className="text-lg text-center">You can now go back to the app</p>
+        </div>
+      </div>
+    </>
+  }
 
   return (
     <>

@@ -59,7 +59,7 @@ export default function LoginPage() {
     try {
       await ixApiClient.loginWithEmailAndPassword(email, password)
       setLoading(false)
-      redirectOnLoginSuccess(queryClient)
+      redirectOnLoginSuccess(queryClient, router)
     } catch (e) {
       setLoading(false)
 
