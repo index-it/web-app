@@ -12,5 +12,7 @@ export const enum IxApiErrorResponse {
 
   EMAILS_RATE_LIMITED = 'You requested too many emails, try again later',
 
-  PASSWORD_RESET_USER_NOT_FOUND = 'No user with the provided email has been found'
+  PASSWORD_RESET_USER_NOT_FOUND = 'No user with the provided email has been found',
+
+  LIST_INVITATION_USER_NOT_FOUND = 'You are not logged in the correct account to accept this invitation'
 }

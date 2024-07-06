@@ -361,4 +361,29 @@ export class IxApiClient {
       }
     }
   }
+
+  /**
+   * 
+   * @param token the token to authenticate the invitation acceptance
+   * @throws IxApiError
+   * @returns void if the invitation is successfully accepted
+   */
+  public acceptListInvitation = async (token: string): Promise<IxList> => {
+    const res = await fetch(`${this.baseUrl}/lists/accept-invitation?`+ new URLSearchParams({ token: token }), {
+      credentials: "include"
+    })
+
+    if (res.ok) {
+      return await res.json()
+    } else {
+      switch (res.status) {
+        case 405: {
+          throw new IxApiError(IxApiErrorResponse.LIST_INVITATION_USER_NOT_FOUND);
+        }
+        default: {
+          throw new IxApiError(IxApiErrorResponse.UNKNOWN);
+        }
+      }
+    }
+  }
 }

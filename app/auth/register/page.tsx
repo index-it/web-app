@@ -17,7 +17,7 @@ import {StorageConstants} from "@/lib/services/StorageConstants";
 import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
 import {useIxApiClient} from "@/hooks/useIxApiClient";
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
-import { PasswordWithRepeatFormSchema } from "@/components/form/schemas/passwordWithRepeatFormSchema";
+import { PasswordWithRepeatFormSchema } from "@/components/form/schemas/password-with-repeat-form-schema";
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -84,7 +84,7 @@ export default function RegisterPage() {
         draggable={false}
       />
 
-      <p className="text-2xl font-semibold text-center mt-4">Create a new password to register</p>
+      <p className="text-2xl font-semibold text-center mt-4">Create a new password to register with { email }</p>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2 mt-8 w-full sm:max-w-sm">

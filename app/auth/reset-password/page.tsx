@@ -17,7 +17,7 @@ import {StorageConstants} from "@/lib/services/StorageConstants";
 import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
 import {useIxApiClient} from "@/hooks/useIxApiClient";
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
-import { PasswordWithRepeatFormSchema } from "@/components/form/schemas/passwordWithRepeatFormSchema";
+import { PasswordWithRepeatFormSchema } from "@/components/form/schemas/password-with-repeat-form-schema";
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams()
