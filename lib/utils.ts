@@ -5,6 +5,7 @@ import {RedirectType, redirect} from "next/navigation";
 import { IxApiError } from "./models/index/core/IxApiError";
 import { IxApiErrorResponse } from "./services/IxApiErrorResponse";
 import { QueryClient } from "@tanstack/react-query";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -39,8 +40,9 @@ export function redirectToLogin() {
 /**
  * Redirects the user to the route he was visiting before prompted to login
  */
-export function redirectOnLoginSuccess(queryClient: QueryClient) {
+export function redirectOnLoginSuccess(queryClient: QueryClient, router: AppRouterInstance) {
   const previousPath = sessionStorage.getItem(StorageConstants.AUTH_REDIRECT_URI) ?? "/"
+  console.log('prev path ' + previousPath);
   queryClient.invalidateQueries()
-  redirect(previousPath, RedirectType.replace)
+  router.replace(previousPath)
 }
