@@ -7,7 +7,8 @@
       "namespace": "android_app",
       "package_name": "app.index_it.android",
       "sha256_cert_fingerprints": [
-        "18:7A:F7:6D:4D:DB:89:9C:85:57:4F:00:E1:D6:5F:29:88:47:2A:82:FF:CE:FF:24:87:C1:3A:C2:BF:D1:60:A5"
+        "18:7A:F7:6D:4D:DB:89:9C:85:57:4F:00:E1:D6:5F:29:88:47:2A:82:FF:CE:FF:24:87:C1:3A:C2:BF:D1:60:A5",
+        "86:05:FC:D3:A4:59:01:4D:3B:73:80:5E:C9:57:01:4A:61:B4:19:37:DB:69:C8:58:6E:F8:3E:6B:92:78:69:3C"
       ]
     }
   }
