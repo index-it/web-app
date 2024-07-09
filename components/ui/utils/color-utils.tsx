@@ -8,7 +8,7 @@ export function contrastColor(hex: string): string {
     const luma = (0.299 * rgb.r) + (0.587 * rgb.g) + (0.114 * rgb.b)
 
     // Return black for bright colors, white for dark colors
-    if (luma > 60) {
+    if (luma > 130) {
       return "#000000"
     } else {
       return "#FFFFFF"

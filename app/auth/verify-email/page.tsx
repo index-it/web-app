@@ -32,7 +32,7 @@ export default function EmailAuthPage() {
 
       setCheckLoading(false)
       if (verified) {
-        redirectOnLoginSuccess(queryClient)
+        redirectOnLoginSuccess(queryClient, router)
       } else {
         toast({
           description: 'Your email is not verified yet, check your inbox',
@@ -110,7 +110,7 @@ export default function EmailAuthPage() {
                 setSendLoading(false)
 
                 if (verified) {
-                  redirectOnLoginSuccess(queryClient)
+                  redirectOnLoginSuccess(queryClient, router)
                 } else {
                   toast({
                     description: 'We sent you another verification email!',
