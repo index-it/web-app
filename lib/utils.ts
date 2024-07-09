@@ -42,7 +42,6 @@ export function redirectToLogin() {
  */
 export function redirectOnLoginSuccess(queryClient: QueryClient, router: AppRouterInstance) {
   const previousPath = sessionStorage.getItem(StorageConstants.AUTH_REDIRECT_URI) ?? "/"
-  console.log('prev path ' + previousPath);
   queryClient.invalidateQueries()
   router.replace(previousPath)
 }
