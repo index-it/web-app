@@ -1,20 +1,17 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useIxApiClient } from "@/hooks/useIxApiClient";
-import { checkForAuthenticationError, redirectToLogin } from "@/lib/utils";
-import { IxListCard } from "@/components/ui/index/ix-list-card";
-import { Button, buttonVariants } from "@/components/ui/button";
+import {useQuery} from "@tanstack/react-query";
+import {useIxApiClient} from "@/hooks/useIxApiClient";
+import {IxListCard} from "@/components/ui/index/ix-list-card";
+import {Button, buttonVariants} from "@/components/ui/button";
 import Link from "next/link";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { z } from "zod";
-import { ListCreateFormSchema } from "@/components/form/schemas/list-create-form-schema";
-import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { IxApiError } from "@/lib/models/index/core/IxApiError";
-import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
-import { CreateListDialogContent } from "@/components/ui/index/create-list-dialog";
-import { useCreateListMutation } from "@/hooks/useCreateListMutation";
+import {Dialog, DialogTrigger} from "@/components/ui/dialog";
+import {useState} from "react";
+import {useToast} from "@/components/ui/use-toast";
+import {IxApiError} from "@/lib/models/index/core/IxApiError";
+import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
+import {CreateListDialogContent} from "@/components/ui/index/create-list-dialog";
+import {useCreateListMutation} from "@/hooks/mutations/index/list/useCreateListMutation";
 
 export default function Home() {
   const ixApiClient = useIxApiClient()
@@ -42,12 +39,9 @@ export default function Home() {
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['lists'],
-    queryFn: ixApiClient.getLists
+    queryFn: ixApiClient.get_lists
   })
 
-  if (checkForAuthenticationError(error)) {
-    redirectToLogin()
-  }
 
   if (isPending) {
     // TODO

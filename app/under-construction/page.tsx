@@ -1,5 +1,5 @@
-import { buttonVariants } from "@/components/ui/button";
-import { Icon } from "@/components/ui/icon";
+import {buttonVariants} from "@/components/ui/button";
+import {Icon} from "@/components/ui/icon";
 import Link from "next/link";
 import Image from "next/image";
 

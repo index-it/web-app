@@ -1,20 +1,20 @@
 "use client"
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import {Button, buttonVariants} from "@/components/ui/button";
 import Image from "next/image";
-import { Icon } from "@/components/ui/icon";
+import {Icon} from "@/components/ui/icon";
 import Link from "next/link";
-import { useGoogleLogin } from '@react-oauth/google';
-import { useIxApiClient } from "@/hooks/useIxApiClient";
-import { useState } from "react";
-import { IxApiError } from "@/lib/models/index/core/IxApiError";
-import { useToast } from "@/components/ui/use-toast";
-import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
-import { GoogleOAuthCodeExchangeApiResponse } from "@/app/api/auth/google/route";
-import { Spinner } from "@/components/ui/spinner";
-import { useRouter } from "next/navigation";
-import { redirectOnLoginSuccess } from "@/lib/utils";
-import { useQueryClient } from "@tanstack/react-query";
+import {useGoogleLogin} from '@react-oauth/google';
+import {useIxApiClient} from "@/hooks/useIxApiClient";
+import {useState} from "react";
+import {IxApiError} from "@/lib/models/index/core/IxApiError";
+import {useToast} from "@/components/ui/use-toast";
+import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
+import {GoogleOAuthCodeExchangeApiResponse} from "@/app/api/auth/google/route";
+import {Spinner} from "@/components/ui/spinner";
+import {useRouter} from "next/navigation";
+import {redirect_on_login_success} from "@/lib/utils";
+import {useQueryClient} from "@tanstack/react-query";
 
 export default function WelcomePage() {
   const ixApiClient = useIxApiClient()
@@ -33,9 +33,9 @@ export default function WelcomePage() {
       if (idTokenResponse.ok) {
         const { id_token }: GoogleOAuthCodeExchangeApiResponse = await idTokenResponse.json()
         try {
-          await ixApiClient.loginWithGoogle(id_token)
+          await ixApiClient.login_with_google(id_token)
           setGoogleLoading(false)
-          redirectOnLoginSuccess(queryClient, router)
+          redirect_on_login_success(queryClient, router)
         } catch (e) {
           console.error(e)
           setGoogleLoading(false)

@@ -11,14 +11,9 @@ import { usePathname } from "next/navigation";
 import { IxList } from "@/lib/models/index/IxList";
 import { Spinner } from "../spinner";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "../sheet";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../tooltip";
-import { Dialog, DialogTrigger } from "../dialog";
-import { CreateListDialogContent } from "../index/create-list-dialog";
-import { ListCreateFormSchema } from "@/components/form/schemas/list-create-form-schema";
-import { useCreateListMutation } from "@/hooks/useCreateListMutation";
+import { useCreateListMutation } from "@/hooks/mutations/index/list/useCreateListMutation";
 import { IxApiError } from "@/lib/models/index/core/IxApiError";
 import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
-import { z } from "zod";
 import { toast } from "../use-toast";
 
 const enum SidebarSelection {
@@ -53,7 +48,7 @@ export function Sidebar() {
 
   const { isPending: isListsPending, data: listsData, error: listsError } = useQuery({
     queryKey: ['lists'],
-    queryFn: ixApiClient.getLists
+    queryFn: ixApiClient.get_lists
   })
 
   const createListMutation = useCreateListMutation({

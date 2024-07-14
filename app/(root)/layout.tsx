@@ -1,4 +1,4 @@
-import { Sidebar } from "@/components/ui/layout/sidebar";
+import {Sidebar} from "@/components/ui/layout/sidebar";
 import React from "react";
 import UnderConstructionPage from "../under-construction/page";
 
