@@ -1,6 +1,7 @@
 import {useIxApiClient} from "@/hooks/useIxApiClient";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {IxCategory} from "@/lib/models/index/IxCategory";
+import {categories_qk} from "@/lib/query/query-keys";
 
 type MutationVariables = {
   list_id: string;

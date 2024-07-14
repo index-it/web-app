@@ -1,5 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {useIxApiClient} from "@/hooks/useIxApiClient";
+import {lists_qk} from "@/lib/query/query-keys";
 
 export function useLists() {
   const ixApiClient = useIxApiClient();

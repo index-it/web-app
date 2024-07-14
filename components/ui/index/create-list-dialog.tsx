@@ -1,4 +1,4 @@
-import { ListCreateFormSchema } from "@/components/form/schemas/list-create-form-schema";
+import { ListCreateEditFormSchema } from "@/components/form/schemas/list-create-edit-form-schema";
 import { z } from "zod";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../dialog";
 import { useForm } from "react-hook-form";
@@ -14,13 +14,13 @@ import { Switch } from "../switch";
 
 interface CreateListDialogContentProps {
   loading: boolean;
-  onCreateListFormSubmit: (data: z.infer<typeof ListCreateFormSchema>) => void
+  onCreateListFormSubmit: (data: z.infer<typeof ListCreateEditFormSchema>) => void
 }
 
 export function CreateListDialogContent({ loading, onCreateListFormSubmit }: CreateListDialogContentProps) {
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false)
-  const form = useForm<z.infer<typeof ListCreateFormSchema>>({
-    resolver: zodResolver(ListCreateFormSchema),
+  const form = useForm<z.infer<typeof ListCreateEditFormSchema>>({
+    resolver: zodResolver(ListCreateEditFormSchema),
     defaultValues: {
       name: "",
       icon: "🏀",

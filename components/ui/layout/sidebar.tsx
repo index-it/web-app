@@ -115,7 +115,7 @@ export function Sidebar() {
           variant="ghost"
           size="sm"
           onClick={() => setDesktopCollapsed(false)}
-          className="hidden sm:inline absolute z-10 bg-background m-4"
+          className="hidden sm:inline z-10 bg-background my-4 ml-4" // TODO: Fix positioning
         >
           <Icon icon="ph:sidebar-simple" className="size-5" />
         </Button>
