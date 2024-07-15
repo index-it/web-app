@@ -1,28 +1,29 @@
-import { ListCreateEditFormSchema } from "@/components/form/schemas/list-create-edit-form-schema";
+import { ListCreateFormSchema } from "@/components/form/schemas/list-create-form-schema";
 import { z } from "zod";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../../dialog";
 import { useForm } from "react-hook-form";
-import { Button, buttonVariants } from "../button";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "../form";
-import { Input } from "../input";
-import { Spinner } from "../spinner";
+import { Button, buttonVariants } from "../../button";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "../../form";
+import { Input } from "../../input";
+import { Spinner } from "../../spinner";
 import {useEffect, useState} from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
-import { Switch } from "../switch";
+import { Switch } from "../../switch";
+import {ListEditFormSchema} from "@/components/form/schemas/list-edit-form-schema";
 
 interface ListFormDialogContentProps {
   loading: boolean;
   edit: boolean;
-  onFormSubmit: (data: z.infer<typeof ListCreateEditFormSchema>) => void,
-  defaultValues?: z.infer<typeof ListCreateEditFormSchema>
+  onFormSubmit: (data: z.infer<typeof ListEditFormSchema>) => void,
+  defaultValues?: z.infer<typeof ListEditFormSchema>
 }
 
 export function ListFormDialogContent({ loading, edit, onFormSubmit, defaultValues }: ListFormDialogContentProps) {
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false)
-  const form = useForm<z.infer<typeof ListCreateEditFormSchema>>({
-    resolver: zodResolver(ListCreateEditFormSchema),
+  const form = useForm<z.infer<typeof ListEditFormSchema>>({
+    resolver: zodResolver(ListEditFormSchema),
     defaultValues: defaultValues ?? {
       name: "",
       icon: "🏀",

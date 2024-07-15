@@ -4,17 +4,22 @@ import {buttonVariants} from "@/components/ui/button";
 import {Icon} from "@/components/ui/icon";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel,
-  AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from "@/components/ui/alert-dialog";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {StorageConstants} from "@/lib/services/StorageConstants";
 
 export default function UnderConstructionPage() {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    const storageValue = localStorage.getItem(StorageConstants.UNDER_CONSTRUCTION_WALL)
+    if (storageValue === "false") {
+      setOpen(false)
+    } else {
+      setOpen(true)
+    }
+  }, []);
+
+
 
   if (open) {
     return (
@@ -26,7 +31,10 @@ export default function UnderConstructionPage() {
           alt="Index logo"
           className="size-20 rounded-2xl shadow-xl border border-border select-none"
           draggable={false}
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            setOpen(false)
+            localStorage.setItem(StorageConstants.UNDER_CONSTRUCTION_WALL, "false")
+          }}
         />
 
         <p className="text-2xl font-semibold text-center">The web app is currently under construction :P</p>

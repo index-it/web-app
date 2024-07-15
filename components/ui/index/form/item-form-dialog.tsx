@@ -1,28 +1,29 @@
-import { ListCreateEditFormSchema } from "@/components/form/schemas/list-create-edit-form-schema";
+import { ListCreateFormSchema } from "@/components/form/schemas/list-create-form-schema";
 import { z } from "zod";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../../dialog";
 import { useForm } from "react-hook-form";
-import { Button, buttonVariants } from "../button";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "../form";
-import { Input } from "../input";
-import { Spinner } from "../spinner";
+import { Button, buttonVariants } from "../../button";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "../../form";
+import { Input } from "../../input";
+import { Spinner } from "../../spinner";
 import {useEffect, useState} from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {ItemCreateEditFormSchema} from "@/components/form/schemas/item-create-edit-form-schema";
+import {ItemCreateFormSchema} from "@/components/form/schemas/item-create-form-schema";
 import {IxCategory} from "@/lib/models/index/IxCategory";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {ItemEditFormSchema} from "@/components/form/schemas/item-edit-form-schema";
 
 interface ItemFormDialogContentProps {
   loading: boolean;
   edit: boolean;
   categories: IxCategory[],
-  onFormSubmit: (data: z.infer<typeof ItemCreateEditFormSchema>) => void,
-  defaultValues?: z.infer<typeof ItemCreateEditFormSchema>
+  onFormSubmit: (data: z.infer<typeof ItemEditFormSchema>) => void,
+  defaultValues?: z.infer<typeof ItemEditFormSchema>
 }
 
 export function ItemFormDialogContent({ loading, edit, onFormSubmit, defaultValues, categories }: ItemFormDialogContentProps) {
-  const form = useForm<z.infer<typeof ItemCreateEditFormSchema>>({
-    resolver: zodResolver(ItemCreateEditFormSchema),
+  const form = useForm<z.infer<typeof ItemEditFormSchema>>({
+    resolver: zodResolver(ItemEditFormSchema),
     defaultValues: defaultValues ?? {
       list_id: "",
       name: "",

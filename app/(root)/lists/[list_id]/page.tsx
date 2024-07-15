@@ -16,20 +16,22 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {Dialog, DialogTrigger} from "@/components/ui/dialog";
-import {ListFormDialogContent} from "@/components/ui/index/list-form-dialog";
+import {ListFormDialogContent} from "@/components/ui/index/form/list-form-dialog";
 import {useToast} from "@/components/ui/use-toast";
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
 import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
 import {useEditListMutation} from "@/hooks/mutations/index/list/useEditListMutation";
 import {Spinner} from "@/components/ui/spinner";
-import {CategoryFormDialogContent} from "@/components/ui/index/category-form-dialog";
+import {CategoryFormDialogContent} from "@/components/ui/index/form/category-form-dialog";
 import {useCreateCategoryMutation} from "@/hooks/mutations/index/category/useCreateCategoryMutation";
 import {IxCategory} from "@/lib/models/index/IxCategory";
 import {IxItem} from "@/lib/models/index/IxItem";
 import {useEditCategoryMutation} from "@/hooks/mutations/index/category/useEditCategoryMutation";
 import {useCreateItemMutation} from "@/hooks/mutations/index/item/useCreateItemMutation";
-import {ItemFormDialogContent} from "@/components/ui/index/item-form-dialog";
+import {ItemFormDialogContent} from "@/components/ui/index/form/item-form-dialog";
 import {useSetItemCompletionMutation} from "@/hooks/mutations/index/item/useSetItemCompletionMutation";
+import {IxCategoryHeader} from "@/components/ui/index/ix-category-header";
+import {IxItemCard} from "@/components/ui/index/ix-item-card";
 
 export default function ListPage() {
   const params = useParams<{ list_id: string }>()
@@ -38,16 +40,10 @@ export default function ListPage() {
   const [completedFilter, setCompletedFilter] = useState<boolean | undefined>(undefined)
 
   const [listDropdownOpen, setListDropdownOpen] = useState(false)
-  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false)
-  const [itemDropdownOpen, setItemDropdownOpen] = useState(false)
 
   const [editListDialogOpen, setEditListDialogOpened] = useState(false)
   const [createCategoryDialogOpen, setCreateCategoryDialogOpen] = useState(false)
-  const [editCategoryDialogOpen, setEditCategoryDialogOpen] = useState(false)
   const [createItemDialogOpen, setCreateItemDialogOpen] = useState(false)
-
-  const [selectedCategory, setSelectedCategory] = useState<IxCategory | null>(null)
-  const [selectedItem, setSelectedItem] = useState<IxItem | null>(null)
 
   /// QUERIES ///
   const { isPending: isListPending, isError: isListError, data: list, error: listError } = useList({ list_id: params.list_id} )
@@ -94,45 +90,10 @@ export default function ListPage() {
     }
   })
 
-  const editCategoryMutation = useEditCategoryMutation({
-    onSuccess: (_data, _variables, _context) => {
-      setEditCategoryDialogOpen(false)
-    },
-    onError: (error, _variables, _context) => {
-      if (error instanceof IxApiError) {
-        toast({
-          description: error.ixApiErrorResponse,
-          variant: "destructive"
-        })
-      } else {
-        toast({
-          description: IxApiErrorResponse.UNKNOWN,
-          variant: "destructive"
-        })
-      }
-    }
-  })
-
   const createItemMutation = useCreateItemMutation({
     onSuccess: (_data, _variables, _context) => {
       setCreateItemDialogOpen(false)
     },
-    onError: (error, _variables, _context) => {
-      if (error instanceof IxApiError) {
-        toast({
-          description: error.ixApiErrorResponse,
-          variant: "destructive"
-        })
-      } else {
-        toast({
-          description: IxApiErrorResponse.UNKNOWN,
-          variant: "destructive"
-        })
-      }
-    }
-  })
-
-  const setItemCompletionMutation = useSetItemCompletionMutation({
     onError: (error, _variables, _context) => {
       if (error instanceof IxApiError) {
         toast({
@@ -224,38 +185,6 @@ export default function ListPage() {
         />
       </Dialog>
 
-      <Dialog open={createCategoryDialogOpen} onOpenChange={setCreateCategoryDialogOpen}>
-        <CategoryFormDialogContent
-          loading={createCategoryMutation.isPending}
-          edit={false}
-          onFormSubmit={createCategoryMutation.mutate}
-          defaultValues={
-            {
-              list_id: list.id,
-              category_id: "",
-              name: "",
-              color: "#000000",
-            }
-          }
-        />
-      </Dialog>
-
-      <Dialog open={editCategoryDialogOpen} onOpenChange={setEditCategoryDialogOpen}>
-        <CategoryFormDialogContent
-          loading={editCategoryMutation.isPending}
-          edit={true}
-          onFormSubmit={editCategoryMutation.mutate}
-          defaultValues={
-            {
-              list_id: list.id,
-              category_id: selectedCategory?.id ?? "loading",
-              name: selectedCategory?.name ?? "loading",
-              color: selectedCategory?.color ?? "#000000",
-            }
-          }
-        />
-      </Dialog>
-
       <Dialog open={createItemDialogOpen} onOpenChange={setCreateItemDialogOpen}>
         <ItemFormDialogContent
           loading={createItemMutation.isPending}
@@ -265,6 +194,7 @@ export default function ListPage() {
           defaultValues={
             {
               list_id: list.id,
+              item_id: "",
               category_id: undefined,
               name: "",
               link: undefined,
@@ -282,49 +212,18 @@ export default function ListPage() {
               <div className="flex items-center gap-2 justify-between w-64">
                 <div className="flex items-center gap-3">
                   <span className="size-3 rounded-full" style={{backgroundColor: list?.color}}/>
-                  <span className="font-semibold">Uncategorized</span>
+                  <span className="font-semibold opacity-60">Uncategorized</span>
                 </div>
-                <Button size="icon" variant="ghost">
-                  <Icon icon="ph:dots-three-outline-vertical-fill" className="size-4"/>
-                </Button>
               </div>
               {items?.filter(item => item.category_id === null).sort((a, b) => a.completed ? 1 : -1).map(item => (
-                <div key={item.id} onClick={() => router.push(`/lists/${list.id}/${item.id}`)} className={cn(buttonVariants({variant:"secondary"}), "gap-4 w-64 justify-start")}>
-                  <Checkbox checked={item.completed} onCheckedChange={(checked) => { event?.stopPropagation(); event?.preventDefault(); setItemCompletionMutation.mutate({ list_id: list.id, item_id: item.id, completed: checked === true })}} />
-                  <span className="text-nowrap overflow-hidden text-ellipsis">{item.name}</span>
-                </div>
+                <IxItemCard item={item} key={item.id} />
               ))}
             </div>
             {categories?.map(category => (
               <div key={category.id} className="flex flex-col gap-4">
-                <div className="flex items-center gap-2 justify-between w-64">
-                  <div className="flex items-center gap-3">
-                    <span className="size-3 rounded-full" style={{backgroundColor: category.color}}/>
-                    <span className="font-semibold">{category.name}</span>
-                  </div>
-                  <DropdownMenu open={categoryDropdownOpen} onOpenChange={setCategoryDropdownOpen}>
-                    <DropdownMenuTrigger asChild>
-                      <Button size="icon" variant="ghost">
-                        <Icon icon="ph:dots-three-outline-vertical-fill" className="size-4"/>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      {/*<DropdownMenuLabel>Categories</DropdownMenuLabel>*/}
-                      {/*<DropdownMenuSeparator />*/}
-                      <DropdownMenuItem onClick={(e) => {
-                        e.preventDefault()
-                        setSelectedCategory(category)
-                        setCategoryDropdownOpen(false)
-                        setEditCategoryDialogOpen(true)
-                      }}>Edit category</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+                <IxCategoryHeader category={category} />
                 {items?.filter(item => item.category_id === category.id).sort((a, b) => a.completed ? 1 : -1).map(item => (
-                  <Button variant="secondary" key={item.id} className="gap-4 w-64 justify-start">
-                    <Checkbox checked={item.completed} />
-                    <span className="text-nowrap overflow-hidden text-ellipsis">{item.name}</span>
-                  </Button>
+                  <IxItemCard item={item} key={item.id} />
                 ))}
               </div>
             ))}

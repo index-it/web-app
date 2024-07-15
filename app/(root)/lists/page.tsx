@@ -10,7 +10,7 @@ import {useQuery} from "@tanstack/react-query";
 import Link from "next/link";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {Dialog, DialogTrigger} from "@/components/ui/dialog";
-import {ListFormDialogContent} from "@/components/ui/index/list-form-dialog";
+import {ListFormDialogContent} from "@/components/ui/index/form/list-form-dialog";
 import {IxListCard} from "@/components/ui/index/ix-list-card";
 
 export default function ListsPage() {

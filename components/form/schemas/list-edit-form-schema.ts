@@ -1,6 +1,6 @@
-import { z } from "zod";
+import {z} from "zod";
 
-export const ListCreateEditFormSchema = z.object({
+export const ListEditFormSchema = z.object({
   list_id: z.string(),
   name: z.string().min(1, "List name must not be empty").max(100, "List name cannot be longer than 100 characters"),
   icon: z.string().min(1, "Choose a valid icon").max(10, "Choose a valid icon"),

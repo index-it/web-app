@@ -1,28 +1,29 @@
-import { ListCreateEditFormSchema } from "@/components/form/schemas/list-create-edit-form-schema";
+import { ListCreateFormSchema } from "@/components/form/schemas/list-create-form-schema";
 import { z } from "zod";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../../dialog";
 import { useForm } from "react-hook-form";
-import { Button, buttonVariants } from "../button";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "../form";
-import { Input } from "../input";
-import { Spinner } from "../spinner";
+import { Button, buttonVariants } from "../../button";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "../../form";
+import { Input } from "../../input";
+import { Spinner } from "../../spinner";
 import {useEffect, useState} from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
-import { Switch } from "../switch";
-import {CategoryCreateEditFormSchema} from "@/components/form/schemas/category-create-edit-form-schema";
+import { Switch } from "../../switch";
+import {CategoryCreateFormSchema} from "@/components/form/schemas/category-create-form-schema";
+import {CategoryEditFormSchema} from "@/components/form/schemas/category-edit-form-schema";
 
 interface CategoryFormDialogContentProps {
   loading: boolean;
   edit: boolean;
-  onFormSubmit: (data: z.infer<typeof CategoryCreateEditFormSchema>) => void,
-  defaultValues?: z.infer<typeof CategoryCreateEditFormSchema>
+  onFormSubmit: (data: z.infer<typeof CategoryEditFormSchema>) => void,
+  defaultValues?: z.infer<typeof CategoryEditFormSchema>
 }
 
 export function CategoryFormDialogContent({ loading, edit, onFormSubmit, defaultValues }: CategoryFormDialogContentProps) {
-  const form = useForm<z.infer<typeof CategoryCreateEditFormSchema>>({
-    resolver: zodResolver(CategoryCreateEditFormSchema),
+  const form = useForm<z.infer<typeof CategoryEditFormSchema>>({
+    resolver: zodResolver(CategoryEditFormSchema),
     defaultValues: defaultValues ?? {
       name: "",
       color: "#0000ff",
