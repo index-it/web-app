@@ -15,7 +15,7 @@ type useCreateCategoryMutationProps = {
   onError?: ((error: Error, variables: MutationVariables, context: unknown) => unknown) | undefined;
 }
 
-export const useCreateListMutation = ({ onSuccess = () => {}, onError = () => {} }: useCreateCategoryMutationProps = {}) => {
+export const useCreateCategoryMutation = ({ onSuccess = () => {}, onError = () => {} }: useCreateCategoryMutationProps = {}) => {
   const ixApiClient = useIxApiClient()
   const queryClient = useQueryClient()
 

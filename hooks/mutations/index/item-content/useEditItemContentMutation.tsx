@@ -9,12 +9,12 @@ type MutationVariables = {
   content: string;
 };
 
-type useEditItemMutationProps = {
+type useEditItemContentMutationProps = {
   onSuccess?: (data: IxItemContent, variables: MutationVariables, context: unknown) => unknown;
   onError?: (error: Error, variables: MutationVariables, context: unknown) => unknown;
 };
 
-export const useEditItemMutation = ({ onSuccess = () => {}, onError = () => {} }: useEditItemMutationProps = {}) => {
+export const useEditItemContentMutation = ({ onSuccess = () => {}, onError = () => {} }: useEditItemContentMutationProps = {}) => {
   const ixApiClient = useIxApiClient();
   const queryClient = useQueryClient();
 

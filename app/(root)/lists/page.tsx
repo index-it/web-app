@@ -10,7 +10,7 @@ import {useQuery} from "@tanstack/react-query";
 import Link from "next/link";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {Dialog, DialogTrigger} from "@/components/ui/dialog";
-import {CreateListDialogContent} from "@/components/ui/index/create-list-dialog";
+import {ListFormDialogContent} from "@/components/ui/index/list-form-dialog";
 import {IxListCard} from "@/components/ui/index/ix-list-card";
 
 export default function ListsPage() {
@@ -64,15 +64,16 @@ export default function ListsPage() {
               Your tasks
             </Link>
 
-            <Dialog modal={false} open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+            <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm">
                   Create list
                 </Button>
               </DialogTrigger>
-              <CreateListDialogContent
+              <ListFormDialogContent
                 loading={createListMutation.isPending}
-                onCreateListFormSubmit={createListMutation.mutate}
+                edit={false}
+                onFormSubmit={createListMutation.mutate}
               />
             </Dialog>
           </div>

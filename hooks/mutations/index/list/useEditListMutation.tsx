@@ -16,7 +16,7 @@ type useCreateListMutationProps = {
   onError?: ((error: Error, variables: MutationVariables, context: unknown) => unknown) | undefined;
 }
 
-export const useCreateListMutation = ({ onSuccess = () => {}, onError = () => {} }: useCreateListMutationProps = {}) => {
+export const useEditListMutation = ({ onSuccess = () => {}, onError = () => {} }: useCreateListMutationProps = {}) => {
   const ixApiClient = useIxApiClient()
   const queryClient = useQueryClient()
 

@@ -10,12 +10,12 @@ type MutationVariables = {
   color: string;
 }
 
-type useCreateCategoryMutationProps = {
+type useEditCategoryMutationProps = {
   onSuccess?: ((data: IxCategory, variables: MutationVariables, context: unknown) => unknown) | undefined;
   onError?: ((error: Error, variables: MutationVariables, context: unknown) => unknown) | undefined;
 }
 
-export const useCreateListMutation = ({ onSuccess = () => {}, onError = () => {} }: useCreateCategoryMutationProps = {}) => {
+export const useEditCategoryMutation = ({ onSuccess = () => {}, onError = () => {} }: useEditCategoryMutationProps = {}) => {
   const ixApiClient = useIxApiClient()
   const queryClient = useQueryClient()
 

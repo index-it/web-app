@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 export const CategoryCreateEditFormSchema = z.object({
+  list_id: z.string(),
+  category_id: z.string(),
   name: z.string().min(1, "Category name must not be empty").max(100, "Category name cannot be longer than 100 characters"),
   color: z.string()
     .length(7)

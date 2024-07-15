@@ -8,12 +8,12 @@ type MutationVariables = {
   item_id: string;
 };
 
-type useEditItemMutationProps = {
+type useDeleteItemMutationProps = {
   onSuccess?: (data: void, variables: MutationVariables, context: unknown) => unknown;
   onError?: (error: Error, variables: MutationVariables, context: unknown) => unknown;
 };
 
-export const useEditItemMutation = ({ onSuccess = () => {}, onError = () => {} }: useEditItemMutationProps = {}) => {
+export const useDeleteItemMutation = ({ onSuccess = () => {}, onError = () => {} }: useDeleteItemMutationProps = {}) => {
   const ixApiClient = useIxApiClient();
   const queryClient = useQueryClient();
 

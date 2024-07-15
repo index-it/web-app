@@ -41,7 +41,7 @@ export function Sidebar() {
     } else if (pathname.includes('/lists/')) {
       setSelectedItem(SidebarSelection.LIST)
       setSelectedListId(pathname.split('/').pop()!)
-    } else if (pathname == "/") {
+    } else if (pathname == "/" || pathname.includes("/lists")) {
       setSelectedItem(SidebarSelection.LISTS)
     }
   }, [pathname])

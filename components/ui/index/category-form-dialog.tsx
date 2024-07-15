@@ -6,33 +6,36 @@ import { Button, buttonVariants } from "../button";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "../form";
 import { Input } from "../input";
 import { Spinner } from "../spinner";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { Switch } from "../switch";
+import {CategoryCreateEditFormSchema} from "@/components/form/schemas/category-create-edit-form-schema";
 
-interface CreateListDialogContentProps {
+interface CategoryFormDialogContentProps {
   loading: boolean;
-  onCreateListFormSubmit: (data: z.infer<typeof ListCreateEditFormSchema>) => void
+  edit: boolean;
+  onFormSubmit: (data: z.infer<typeof CategoryCreateEditFormSchema>) => void,
+  defaultValues?: z.infer<typeof CategoryCreateEditFormSchema>
 }
 
-export function CreateListDialogContent({ loading, onCreateListFormSubmit }: CreateListDialogContentProps) {
-  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false)
-  const form = useForm<z.infer<typeof ListCreateEditFormSchema>>({
-    resolver: zodResolver(ListCreateEditFormSchema),
-    defaultValues: {
+export function CategoryFormDialogContent({ loading, edit, onFormSubmit, defaultValues }: CategoryFormDialogContentProps) {
+  const form = useForm<z.infer<typeof CategoryCreateEditFormSchema>>({
+    resolver: zodResolver(CategoryCreateEditFormSchema),
+    defaultValues: defaultValues ?? {
       name: "",
-      icon: "🏀",
       color: "#0000ff",
-      public: false
     },
   })
 
-  function onEmojiSelect(emoji: any) {
-    setEmojiPickerOpen(false);
-    form.setValue("icon", emoji.native);
-  }
+  // Destructure the reset method from the form object
+  const { reset } = form;
+
+  // Use useEffect to reset the form values when defaultValues changes
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
 
   function onColorSelect(color: any) {
     form.setValue("color", color.target.value);
@@ -42,12 +45,12 @@ export function CreateListDialogContent({ loading, onCreateListFormSubmit }: Cre
   return (
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle>Create a new list</DialogTitle>
+        <DialogTitle>Create a new category</DialogTitle>
         <DialogDescription>
-          Choose a name, icon and color for your new list!
+          Choose a name and color for your category!
         </DialogDescription>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onCreateListFormSubmit)} className="flex flex-col gap-6 pt-4 w-full">
+          <form onSubmit={form.handleSubmit(onFormSubmit)} className="flex flex-col gap-6 pt-4 w-full">
             <FormField
               control={form.control}
               name="name"
@@ -63,32 +66,6 @@ export function CreateListDialogContent({ loading, onCreateListFormSubmit }: Cre
                     <FormMessage />
                   </div>
 
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="icon"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center gap-4 space-y-0">
-                  <FormLabel className="min-w-12">Icon</FormLabel>
-                  <div className="flex flex-col gap-1">
-                    <FormControl className="flex items-center">
-                      <div className="relative">
-                        <Dialog modal={false} open={emojiPickerOpen} onOpenChange={setEmojiPickerOpen}>
-                          <DialogTrigger asChild>
-                            <Button variant="outline" type="button" className="w-min text-lg">{form.getValues().icon}</Button>
-                          </DialogTrigger>
-                          <DialogContent hideCloseButton={true} className="w-min bg-transparent border-none shadow-none">
-                            <Picker data={emojiData} onEmojiSelect={onEmojiSelect} />
-                          </DialogContent>
-                        </Dialog>
-                      </div>
-
-                    </FormControl>
-                    <FormMessage />
-                  </div>
                 </FormItem>
               )}
             />
@@ -115,22 +92,6 @@ export function CreateListDialogContent({ loading, onCreateListFormSubmit }: Cre
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="public"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center gap-4 space-y-0">
-                  <FormLabel className="min-w-12">Public</FormLabel>
-                  <div className="flex flex-col gap-1">
-                    <FormControl>
-                      <Switch />
-                    </FormControl>
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
-
             <div className="flex items-center justify-center">
               <Button
                 type="submit"
@@ -138,7 +99,7 @@ export function CreateListDialogContent({ loading, onCreateListFormSubmit }: Cre
                 disabled={loading}
               >
                 {loading && <Spinner className="mr-2 size-4" />}
-                Create list
+                {edit ? "Edit" : "Create"} category
               </Button>
             </div>
           </form>

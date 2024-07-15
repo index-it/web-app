@@ -9,12 +9,12 @@ type MutationVariables = {
   completed: boolean;
 };
 
-type useEditItemMutationProps = {
+type useSetItemCompletionMutationProps = {
   onSuccess?: (data: IxItem, variables: MutationVariables, context: unknown) => unknown;
   onError?: (error: Error, variables: MutationVariables, context: unknown) => unknown;
 };
 
-export const useEditItemMutation = ({ onSuccess = () => {}, onError = () => {} }: useEditItemMutationProps = {}) => {
+export const useSetItemCompletionMutation = ({ onSuccess = () => {}, onError = () => {} }: useSetItemCompletionMutationProps = {}) => {
   const ixApiClient = useIxApiClient();
   const queryClient = useQueryClient();
 

@@ -8,12 +8,12 @@ type MutationVariables = {
   category_id: string;
 }
 
-type useCreateCategoryMutationProps = {
+type useDeleteCategoryMutationProps = {
   onSuccess?: ((data: void, variables: MutationVariables, context: unknown) => unknown) | undefined;
   onError?: ((error: Error, variables: MutationVariables, context: unknown) => unknown) | undefined;
 }
 
-export const useCreateListMutation = ({ onSuccess = () => {}, onError = () => {} }: useCreateCategoryMutationProps = {}) => {
+export const useDeleteCategoryMutation = ({ onSuccess = () => {}, onError = () => {} }: useDeleteCategoryMutationProps = {}) => {
   const ixApiClient = useIxApiClient()
   const queryClient = useQueryClient()
 
