@@ -3,7 +3,7 @@ import {redirect_to_login} from "@/lib/utils";
 const ix_fetch = async (
   url: string | URL | Request,
   init?: RequestInit | undefined,
-  redirect_on_401: boolean = true
+  redirect_on_401: boolean = true,
 ): Promise<Response> => {
   const response = await fetch(url, init);
 
