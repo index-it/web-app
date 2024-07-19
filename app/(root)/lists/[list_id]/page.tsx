@@ -216,14 +216,14 @@ export default function ListPage() {
                 </div>
               </div>
               {items?.filter(item => item.category_id === null).sort((a, b) => a.completed ? 1 : -1).map(item => (
-                <IxItemCard item={item} key={item.id} />
+                <IxItemCard item={item} key={item.id} categories={categories ?? []} />
               ))}
             </div>
             {categories?.map(category => (
               <div key={category.id} className="flex flex-col gap-4">
                 <IxCategoryHeader category={category} />
                 {items?.filter(item => item.category_id === category.id).sort((a, b) => a.completed ? 1 : -1).map(item => (
-                  <IxItemCard item={item} key={item.id} />
+                  <IxItemCard item={item} key={item.id} categories={categories} />
                 ))}
               </div>
             ))}

@@ -6,8 +6,8 @@ import {item_qk, items_qk} from "@/lib/query/query-keys";
 type MutationVariables = {
   list_id: string;
   name: string;
-  category_id?: string;
-  link?: string;
+  category_id?: string | null;
+  link?: string | null;
 };
 
 type useCreateItemMutationProps = {

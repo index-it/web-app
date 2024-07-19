@@ -11,6 +11,7 @@ import {useEditCategoryMutation} from "@/hooks/mutations/index/category/useEditC
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
 import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
 import {useToast} from "@/components/ui/use-toast";
+import {useDeleteCategoryMutation} from "@/hooks/mutations/index/category/useDeleteCategoryMutation";
 
 type IxCategoryHeaderProps = {
   category: IxCategory
@@ -25,6 +26,22 @@ export function IxCategoryHeader({ category, }: IxCategoryHeaderProps) {
     onSuccess: (_data, _variables, _context) => {
       setEditCategoryDialogOpen(false)
     },
+    onError: (error, _variables, _context) => {
+      if (error instanceof IxApiError) {
+        toast({
+          description: error.ixApiErrorResponse,
+          variant: "destructive"
+        })
+      } else {
+        toast({
+          description: IxApiErrorResponse.UNKNOWN,
+          variant: "destructive"
+        })
+      }
+    }
+  })
+
+  const deleteCategoryMutation = useDeleteCategoryMutation({
     onError: (error, _variables, _context) => {
       if (error instanceof IxApiError) {
         toast({
@@ -79,6 +96,10 @@ export function IxCategoryHeader({ category, }: IxCategoryHeaderProps) {
                 setEditCategoryDialogOpen(true)
               }}
             >Edit category</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => deleteCategoryMutation.mutate({list_id: category.list_id, category_id: category.id})}
+              className="text-destructive"
+            >Delete category</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

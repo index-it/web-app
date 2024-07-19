@@ -46,7 +46,7 @@ export function CategoryFormDialogContent({ loading, edit, onFormSubmit, default
   return (
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle>Create a new category</DialogTitle>
+        <DialogTitle>{edit ? "Edit this" : "Create a new"} category</DialogTitle>
         <DialogDescription>
           Choose a name and color for your category!
         </DialogDescription>

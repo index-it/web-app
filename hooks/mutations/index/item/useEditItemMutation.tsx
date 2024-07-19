@@ -7,8 +7,8 @@ type MutationVariables = {
   list_id: string;
   item_id: string;
   name: string;
-  category_id?: string;
-  link?: string;
+  category_id?: string | null;
+  link?: string | null;
 };
 
 type useEditItemMutationProps = {

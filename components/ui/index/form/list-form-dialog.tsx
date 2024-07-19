@@ -53,7 +53,7 @@ export function ListFormDialogContent({ loading, edit, onFormSubmit, defaultValu
   return (
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle>Create a new list</DialogTitle>
+        <DialogTitle>{edit ? "Edit this" : "Create a new"} list</DialogTitle>
         <DialogDescription>
           Choose a name, icon and color for your new list!
         </DialogDescription>

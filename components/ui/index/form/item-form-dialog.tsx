@@ -44,9 +44,9 @@ export function ItemFormDialogContent({ loading, edit, onFormSubmit, defaultValu
   return (
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle>Create a new category</DialogTitle>
+        <DialogTitle>{edit ? "Edit this" : "Create a new"} item</DialogTitle>
         <DialogDescription>
-          Choose a name and color for your category!
+          You can categorize the item and also assign a link to it!
         </DialogDescription>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onFormSubmit)} className="flex flex-col gap-6 pt-4 w-full">
@@ -75,7 +75,7 @@ export function ItemFormDialogContent({ loading, edit, onFormSubmit, defaultValu
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center gap-4 space-y-0">
                   <FormLabel className="min-w-12 mr-2">Category</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value == null ? undefined : field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select an optional category" />
@@ -100,7 +100,7 @@ export function ItemFormDialogContent({ loading, edit, onFormSubmit, defaultValu
                   <div className="flex flex-col gap-1">
                     <FormControl className="flex items-center">
                       <Input
-                        placeholder="Enter an optional link" {...field}
+                        placeholder="Enter an optional link" {...field} value={field.value == null ? undefined : field.value}
                       />
                     </FormControl>
                     <FormMessage />
