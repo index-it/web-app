@@ -12,6 +12,7 @@ import {Button, buttonVariants} from "@/components/ui/button";
 import {Dialog, DialogTrigger} from "@/components/ui/dialog";
 import {ListFormDialogContent} from "@/components/ui/index/form/list-form-dialog";
 import {IxListCard} from "@/components/ui/index/ix-list-card";
+import {useLists} from "@/hooks/queries/useLists";
 
 export default function ListsPage() {
   const ixApiClient = useIxApiClient()
@@ -37,11 +38,7 @@ export default function ListsPage() {
     }
   })
 
-  const { isPending, isError, data, error } = useQuery({
-    queryKey: ['lists'],
-    queryFn: ixApiClient.get_lists
-  })
-
+  const { isPending, isError, data, error } = useLists()
 
   if (isPending) {
     // TODO
