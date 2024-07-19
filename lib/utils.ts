@@ -15,7 +15,7 @@ export function cn(...inputs: ClassValue[]) {
 export function redirect_to_login() {
   const path_with_query = location.pathname + location.search;
   sessionStorage.setItem(StorageConstants.AUTH_REDIRECT_URI, path_with_query)
-  redirect("/auth/welcome")
+  window.location.href = "/auth/welcome"
 }
 
 /**
