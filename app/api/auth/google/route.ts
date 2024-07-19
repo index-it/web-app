@@ -1,6 +1,6 @@
-import { GoogleOAuthClient } from '@/lib/services/GoogleOAuthClient'
-import { NextRequest } from 'next/server'
- 
+import {GoogleOAuthClient} from '@/lib/services/GoogleOAuthClient'
+import {NextRequest} from 'next/server'
+
 export type GoogleOAuthCodeExchangeApiResponse = {
   id_token: string
 }
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
      try {
       // postmessage reasoning: https://github.com/MomenSherif/react-oauth/issues/71
-      const idToken = await googleOAuthClient.exchangeCodeForIdToken(code, googleClientId, googleClientSecret, 'postmessage')
+      const idToken = await googleOAuthClient.exchange_code_for_id_token(code, googleClientId, googleClientSecret, 'postmessage')
       return Response.json({ id_token: idToken })
     } catch(e) {
       console.error(e)

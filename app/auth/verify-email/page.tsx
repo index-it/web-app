@@ -5,15 +5,15 @@ import {Button} from "@/components/ui/button";
 import {Icon} from "@/components/ui/icon";
 import {useToast} from "@/components/ui/use-toast";
 import {useRouter} from "next/navigation";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {Spinner} from "@/components/ui/spinner";
 import {StorageConstants} from "@/lib/services/StorageConstants";
 import {useIxApiClient} from "@/hooks/useIxApiClient";
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
-import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
-import { redirectOnLoginSuccess } from "@/lib/utils";
-import { clearInterval } from "timers";
-import { useQueryClient } from "@tanstack/react-query";
+import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
+import {redirect_on_login_success} from "@/lib/utils";
+import {clearInterval} from "timers";
+import {useQueryClient} from "@tanstack/react-query";
 
 export default function EmailAuthPage() {
   const router = useRouter()
@@ -28,11 +28,11 @@ export default function EmailAuthPage() {
   async function checkForVerification() {
     try {
       setCheckLoading(true)
-      const verified = await ixApiClient.isEmailVerified(email, password)
+      const verified = await ixApiClient.is_email_verified(email, password)
 
       setCheckLoading(false)
       if (verified) {
-        redirectOnLoginSuccess(queryClient, router)
+        redirect_on_login_success(queryClient, router)
       } else {
         toast({
           description: 'Your email is not verified yet, check your inbox',
@@ -106,11 +106,11 @@ export default function EmailAuthPage() {
               try {
                 setSendLoading(true)
                 // TODO: Debug the fact that this show the error toast
-                const verified = await ixApiClient.sendVerificationEmail(email, password)
+                const verified = await ixApiClient.send_verification_email(email, password)
                 setSendLoading(false)
 
                 if (verified) {
-                  redirectOnLoginSuccess(queryClient, router)
+                  redirect_on_login_success(queryClient, router)
                 } else {
                   toast({
                     description: 'We sent you another verification email!',

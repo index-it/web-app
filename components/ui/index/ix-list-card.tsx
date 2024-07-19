@@ -9,7 +9,7 @@ interface IxListCardProps {
 export function IxListCard({ name, color, icon }: IxListCardProps) {
   return (
     <div
-      className="flex flex-col w-36 h-24 justify-between rounded-xl p-3 gap-3 hover:opacity-85"
+      className="flex flex-col w-36 h-24 justify-between rounded-xl px-3 py-2 gap-3 hover:opacity-85"
       style={{ backgroundColor: color }}
     >
       <div className="flex justify-between">

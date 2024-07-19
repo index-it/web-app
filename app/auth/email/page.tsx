@@ -6,19 +6,18 @@ import {Icon} from "@/components/ui/icon";
 import Link from "next/link";
 import {Input} from "@/components/ui/input";
 import {z} from "zod";
-import {Form} from "@/components/ui/form"
+import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form"
 import {useForm} from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod"
-import {FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
+import {zodResolver} from "@hookform/resolvers/zod"
 import {useToast} from "@/components/ui/use-toast";
 import {IxWelcomeAction} from "@/lib/models/index/IxWelcomeAction";
 import {useRouter} from "next/navigation";
-import { useState } from "react";
+import {useState} from "react";
 import {Spinner} from "@/components/ui/spinner";
 import {StorageConstants} from "@/lib/services/StorageConstants";
 import {useIxApiClient} from "@/hooks/useIxApiClient";
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
-import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
+import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
 
 const FormSchema = z.object({
   email: z.string().email('You must input a valid email address')
@@ -42,7 +41,7 @@ export default function EmailAuthPage() {
 
     const email = data.email
     try {
-      const welcomeAction = await ixApiClient.getWelcomeAction(email)
+      const welcomeAction = await ixApiClient.get_welcome_action(email)
 
       sessionStorage.setItem(StorageConstants.AUTH_EMAIL, email)
       setLoading(false)

@@ -17,9 +17,19 @@ import {StorageConstants} from "@/lib/services/StorageConstants";
 import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
 import {useIxApiClient} from "@/hooks/useIxApiClient";
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { useQueryClient } from "@tanstack/react-query";
-import { redirectOnLoginSuccess } from "@/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
+import {useQueryClient} from "@tanstack/react-query";
+import {redirect_on_login_success} from "@/lib/utils";
 
 const FormSchema = z.object({
   password: z.string()
@@ -57,9 +67,9 @@ export default function LoginPage() {
 
     const password = data.password
     try {
-      await ixApiClient.loginWithEmailAndPassword(email, password)
+      await ixApiClient.login_with_email_and_password(email, password)
       setLoading(false)
-      redirectOnLoginSuccess(queryClient, router)
+      redirect_on_login_success(queryClient, router)
     } catch (e) {
       setLoading(false)
 
@@ -153,7 +163,7 @@ export default function LoginPage() {
                 <AlertDialogAction
                   onClick={ async () => {
                     try {
-                      await ixApiClient.sendPasswordForgottenEmail(email)
+                      await ixApiClient.send_password_forgotten_email(email)
                       toast({
                         description: `We have sent an email to ${email} with instructions on how to reset the password!`,
                         variant: 'default'

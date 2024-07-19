@@ -1,0 +1,8 @@
+{
+  "name": "Index - Web",
+  "short_name": "Index",
+  "description": "be intentional · index it",
+  "start_url": "/",
+  "background_color": "#FFFFFF",
+  "theme_color": "#000000"
+}

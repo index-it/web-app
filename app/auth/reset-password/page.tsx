@@ -13,11 +13,10 @@ import Link from "next/link";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {Icon} from "@/components/ui/icon";
 import {Spinner} from "@/components/ui/spinner";
-import {StorageConstants} from "@/lib/services/StorageConstants";
 import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
 import {useIxApiClient} from "@/hooks/useIxApiClient";
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
-import { PasswordWithRepeatFormSchema } from "@/components/form/schemas/password-with-repeat-form-schema";
+import {PasswordWithRepeatFormSchema} from "@/components/form/schemas/password-with-repeat-form-schema";
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams()
@@ -59,7 +58,7 @@ export default function ResetPasswordPage() {
 
     const password = data.password
     try {
-      await ixApiClient.resetPasswordUsingToken(token, password)
+      await ixApiClient.reset_password_using_token(token, password)
       setLoading(false)
       setSuccess(true)
     } catch (e) {
