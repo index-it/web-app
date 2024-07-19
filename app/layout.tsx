@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type {Metadata} from "next";
+import {Inter} from "next/font/google";
 import "./globals.css";
 import QueryClientContextProvider from "@/components/QueryClientContextProvider";
-import { Toaster } from "@/components/ui/toaster";
+import {Toaster} from "@/components/ui/toaster";
 import IxApiClientContextProvider from "@/components/IxApiClientContextProvider";
-import React, { Suspense } from "react";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import React, {Suspense} from "react";
+import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 
 const inter = Inter({ subsets: ["latin"] });
 

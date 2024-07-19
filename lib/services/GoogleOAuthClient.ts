@@ -13,7 +13,7 @@ export class GoogleOAuthClient {
    * @throws Error
    * @returns the id token
    */
-  public exchangeCodeForIdToken = async (code: string, client_id: string, client_secret: string, redirect_uri: string, ): Promise<string> => {
+  public exchange_code_for_id_token = async (code: string, client_id: string, client_secret: string, redirect_uri: string): Promise<string> => {
     const res = await fetch(`https://oauth2.googleapis.com/token`, {
       method: "POST",
       body: JSON.stringify({

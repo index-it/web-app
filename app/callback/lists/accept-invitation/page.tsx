@@ -1,16 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useToast } from "@/components/ui/use-toast";
-import { useIxApiClient } from "@/hooks/useIxApiClient";
-import { IxApiError } from "@/lib/models/index/core/IxApiError";
-import { IxApiErrorResponse } from "@/lib/services/IxApiErrorResponse";
-import { StorageConstants } from "@/lib/services/StorageConstants";
-import { checkForAuthenticationError, cn } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Spinner } from "@/components/ui/spinner";
+import {useToast} from "@/components/ui/use-toast";
+import {useIxApiClient} from "@/hooks/useIxApiClient";
+import {IxApiError} from "@/lib/models/index/core/IxApiError";
+import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
+import {StorageConstants} from "@/lib/services/StorageConstants";
+import {cn} from "@/lib/utils";
+import {useRouter, useSearchParams} from "next/navigation";
+import {useEffect, useState} from "react";
+import {Spinner} from "@/components/ui/spinner";
 
 export default function CallbackListsAcceptInvitationPage() {
   const searchParams = useSearchParams()
@@ -37,7 +36,7 @@ export default function CallbackListsAcceptInvitationPage() {
         setLoading(true)
 
         try {
-          const list = await ixApiClient.acceptListInvitation(token);
+          const list = await ixApiClient.accept_list_invitation(token);
           setLoading(false)
           setSuccess(true)
         } catch (e) {

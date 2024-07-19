@@ -1,33 +1,44 @@
 import { ListCreateFormSchema } from "@/components/form/schemas/list-create-form-schema";
 import { z } from "zod";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../../dialog";
 import { useForm } from "react-hook-form";
-import { Button, buttonVariants } from "../button";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "../form";
-import { Input } from "../input";
-import { Spinner } from "../spinner";
-import { useState } from "react";
+import { Button, buttonVariants } from "../../button";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "../../form";
+import { Input } from "../../input";
+import { Spinner } from "../../spinner";
+import {useEffect, useState} from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
-import { Switch } from "../switch";
+import { Switch } from "../../switch";
+import {ListEditFormSchema} from "@/components/form/schemas/list-edit-form-schema";
 
-interface CreateListDialogContentProps {
+interface ListFormDialogContentProps {
   loading: boolean;
-  onCreateListFormSubmit: (data: z.infer<typeof ListCreateFormSchema>) => void
+  edit: boolean;
+  onFormSubmit: (data: z.infer<typeof ListEditFormSchema>) => void,
+  defaultValues?: z.infer<typeof ListEditFormSchema>
 }
 
-export function CreateListDialogContent({ loading, onCreateListFormSubmit }: CreateListDialogContentProps) {
+export function ListFormDialogContent({ loading, edit, onFormSubmit, defaultValues }: ListFormDialogContentProps) {
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false)
-  const form = useForm<z.infer<typeof ListCreateFormSchema>>({
-    resolver: zodResolver(ListCreateFormSchema),
-    defaultValues: {
+  const form = useForm<z.infer<typeof ListEditFormSchema>>({
+    resolver: zodResolver(ListEditFormSchema),
+    defaultValues: defaultValues ?? {
       name: "",
       icon: "🏀",
       color: "#0000ff",
       public: false
     },
   })
+
+  // Destructure the reset method from the form object
+  const { reset } = form;
+
+  // Use useEffect to reset the form values when defaultValues changes
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
 
   function onEmojiSelect(emoji: any) {
     setEmojiPickerOpen(false);
@@ -42,12 +53,12 @@ export function CreateListDialogContent({ loading, onCreateListFormSubmit }: Cre
   return (
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle>Create a new list</DialogTitle>
+        <DialogTitle>{edit ? "Edit this" : "Create a new"} list</DialogTitle>
         <DialogDescription>
           Choose a name, icon and color for your new list!
         </DialogDescription>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onCreateListFormSubmit)} className="flex flex-col gap-6 pt-4 w-full">
+          <form onSubmit={form.handleSubmit(onFormSubmit)} className="flex flex-col gap-6 pt-4 w-full">
             <FormField
               control={form.control}
               name="name"
@@ -138,7 +149,7 @@ export function CreateListDialogContent({ loading, onCreateListFormSubmit }: Cre
                 disabled={loading}
               >
                 {loading && <Spinner className="mr-2 size-4" />}
-                Create list
+                {edit ? "Edit" : "Create"} list
               </Button>
             </div>
           </form>

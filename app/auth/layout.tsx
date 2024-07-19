@@ -1,4 +1,4 @@
-import { GoogleOAuthProvider } from "@react-oauth/google";
+import {GoogleOAuthProvider} from "@react-oauth/google";
 import React from "react";
 
 export default function AuthLayout({

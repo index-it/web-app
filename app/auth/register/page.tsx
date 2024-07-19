@@ -17,7 +17,7 @@ import {StorageConstants} from "@/lib/services/StorageConstants";
 import {IxApiErrorResponse} from "@/lib/services/IxApiErrorResponse";
 import {useIxApiClient} from "@/hooks/useIxApiClient";
 import {IxApiError} from "@/lib/models/index/core/IxApiError";
-import { PasswordWithRepeatFormSchema } from "@/components/form/schemas/password-with-repeat-form-schema";
+import {PasswordWithRepeatFormSchema} from "@/components/form/schemas/password-with-repeat-form-schema";
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -52,7 +52,7 @@ export default function RegisterPage() {
 
     const password = data.password
     try {
-      await ixApiClient.registerWithEmailAndPassword(email, password)
+      await ixApiClient.register_with_email_and_password(email, password)
       sessionStorage.setItem(StorageConstants.AUTH_PASSWORD, password)
       setLoading(false)
       router.push("/auth/verify-email")

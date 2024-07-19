@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const ListCreateFormSchema = z.object({
+  list_id: z.string(),
   name: z.string().min(1, "List name must not be empty").max(100, "List name cannot be longer than 100 characters"),
   icon: z.string().min(1, "Choose a valid icon").max(10, "Choose a valid icon"),
   color: z.string()
