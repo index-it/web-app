@@ -234,6 +234,14 @@ export default function ListPage() {
         <div className="h-full">
           {/*TODO: horizontal scroll */}
           <div className="overflow-x-auto flex gap-16 h-full">
+            {categories?.map(category => (
+              <div key={category.id} className="flex flex-col gap-4">
+                <IxCategoryHeader category={category}/>
+                {items?.filter(item => item.category_id === category.id).sort((a, b) => a.completed ? 1 : -1).map(item => (
+                  <IxItemCard item={item} key={item.id} categories={categories}/>
+                ))}
+              </div>
+            ))}
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2 justify-between w-64">
                 <div className="flex items-center gap-3">
@@ -242,17 +250,9 @@ export default function ListPage() {
                 </div>
               </div>
               {items?.filter(item => item.category_id === null).sort((a, b) => a.completed ? 1 : -1).map(item => (
-                <IxItemCard item={item} key={item.id} categories={categories ?? []} />
+                <IxItemCard item={item} key={item.id} categories={categories ?? []}/>
               ))}
             </div>
-            {categories?.map(category => (
-              <div key={category.id} className="flex flex-col gap-4">
-                <IxCategoryHeader category={category} />
-                {items?.filter(item => item.category_id === category.id).sort((a, b) => a.completed ? 1 : -1).map(item => (
-                  <IxItemCard item={item} key={item.id} categories={categories} />
-                ))}
-              </div>
-            ))}
           </div>
 
         </div>
