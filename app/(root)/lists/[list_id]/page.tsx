@@ -12,7 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {cn} from "@/lib/utils";
 import {
   DropdownMenu,
-  DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {Dialog, DialogTrigger} from "@/components/ui/dialog";
@@ -32,6 +32,7 @@ import {ItemFormDialogContent} from "@/components/ui/index/form/item-form-dialog
 import {useSetItemCompletionMutation} from "@/hooks/mutations/index/item/useSetItemCompletionMutation";
 import {IxCategoryHeader} from "@/components/ui/index/ix-category-header";
 import {IxItemCard} from "@/components/ui/index/ix-item-card";
+import {useDeleteListMutation} from "@/hooks/mutations/index/list/useDeleteListMutation";
 
 export default function ListPage() {
   const params = useParams<{ list_id: string }>()
@@ -55,6 +56,25 @@ export default function ListPage() {
   const editListMutation = useEditListMutation({
     onSuccess: (_data, _variables, _context) => {
       setEditListDialogOpened(false)
+    },
+    onError: (error, _variables, _context) => {
+      if (error instanceof IxApiError) {
+        toast({
+          description: error.ixApiErrorResponse,
+          variant: "destructive"
+        })
+      } else {
+        toast({
+          description: IxApiErrorResponse.UNKNOWN,
+          variant: "destructive"
+        })
+      }
+    }
+  })
+
+  const deleteListMutation = useDeleteListMutation({
+    onSuccess: (_data, _variables, _context) => {
+      router.push("/lists")
     },
     onError: (error, _variables, _context) => {
       if (error instanceof IxApiError) {
@@ -142,6 +162,12 @@ export default function ListPage() {
                 setListDropdownOpen(false)
                 setEditListDialogOpened(true)
               }}>Edit list</DropdownMenuItem>
+              <DropdownMenuItem onClick={(e) => {
+                e.preventDefault()
+                setListDropdownOpen(false)
+                deleteListMutation.mutate({ list_id: list.id })
+              }} className="text-destructive">Delete list</DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={(e) => {
                 e.preventDefault()
                 setListDropdownOpen(false)

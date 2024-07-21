@@ -25,9 +25,10 @@ export function ListFormDialogContent({ loading, edit, onFormSubmit, defaultValu
   const form = useForm<z.infer<typeof ListEditFormSchema>>({
     resolver: zodResolver(ListEditFormSchema),
     defaultValues: defaultValues ?? {
+      list_id: "",
       name: "",
       icon: "🏀",
-      color: "#0000ff",
+      color: "#010101",
       public: false
     },
   })
