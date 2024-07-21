@@ -78,7 +78,7 @@ export function Sidebar() {
           <Button
             variant="ghost"
             size="icon"
-            className="sm:hidden absolute z-10 bg-background m-4"
+            className="sm:hidden fixed bottom-0 z-10 bg-background m-4"
           >
             <Icon icon="ph:sidebar-simple" className="size-5" />
           </Button>

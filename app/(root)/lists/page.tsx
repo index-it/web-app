@@ -53,10 +53,10 @@ export default function ListsPage() {
   if (data !== undefined) {
     return (
       <>
-        <div className="flex flex-col items-center justify-center w-full gap-4">
+        <div className="flex flex-col w-full mb-auto mt-auto py-16">
           <span className="text-2xl font-semibold text-center">Welcome back!</span>
 
-          <div className="flex gap-4 flex-wrap items-center justify-center">
+          <div className="flex gap-4 flex-wrap items-center justify-center mt-4">
             <Link href="/tasks" className={buttonVariants({ size: "sm" })}>
               Your tasks
             </Link>
@@ -74,7 +74,7 @@ export default function ListsPage() {
               />
             </Dialog>
           </div>
-          <div className="p-4 flex items-center justify-center">
+          <div className="px-4 flex items-center justify-center mt-8">
             <div className="gap-4 grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {data.map((list) => (
                 <Link href={`/lists/${list.id}`} key={list.id}>
