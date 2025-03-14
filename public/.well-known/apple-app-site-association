@@ -1,0 +1,15 @@
+{
+  "applinks": {
+      "details": [
+           {
+             "appID": "79VJQ9DB34.app.index-it.index",
+             "components": [
+               {
+                  "/": "*",
+                  "comment": "Matches all URLs of the site."
+               }
+             ]
+           }
+       ]
+   }
+}
