@@ -4,6 +4,26 @@
            {
              "appID": "79VJQ9DB34.app.index-it.index",
              "components": [
+                {
+                    "/": "/auth/reset-password",
+                    "exclude": true,
+                    "comment": "exclude password reset"
+                },
+                {
+                    "/": "/auth/verify-email",
+                    "exclude": true,
+                    "comment": "exclude email verification"
+                },
+                {
+                    "/": "/api/*",
+                    "exclude": true,
+                    "comment": "exclude all apis"
+                },
+                {
+                    "/": "/callback/*",
+                    "exclude": true,
+                    "comment": "exclude all callbacks"
+                },
                {
                   "/": "*",
                   "comment": "Matches all URLs of the site."
