@@ -22,6 +22,7 @@ export const enum IxApiErrorResponse {
   LIST_NOT_FOUND = "This list doesn't exist anymore",
   LIST_CANNOT_INVITE_SELF = "You cannot invite yourself to the list",
   LIST_OWNER_CANNOT_LEAVE = "You cannot leave a list that you own",
+  LIST_INVITE_EXPIRED = "This list invite link has expired",
   LIST_INVITATION_USER_NOT_FOUND = 'You are not logged in the correct account to accept this invitation',
   LIST_MISSING_PERMISSION_VIEWER = "You don't have permissions to view this list",
   LIST_MISSING_PERMISSION_EDITOR = "You need edit permissions on the list to perform this action",

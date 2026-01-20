@@ -11,7 +11,7 @@ import {useRouter, useSearchParams} from "next/navigation";
 import {useEffect, useState} from "react";
 import {Spinner} from "@/components/ui/spinner";
 
-export default function CallbackListsAcceptInvitationPage() {
+export default function CallbackListsUserAcceptInvitationPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { toast } = useToast()
@@ -36,7 +36,7 @@ export default function CallbackListsAcceptInvitationPage() {
         setLoading(true)
 
         try {
-          const list = await ixApiClient.accept_list_invitation(token);
+          const list = await ixApiClient.accept_list_user_invitation(token);
           setLoading(false)
           setSuccess(true)
         } catch (e) {

@@ -1014,13 +1014,41 @@ export class IxApiClient {
 
   /// LISTS SHARING ///
   /**
-   * 
+   *
    * @param token the token to authenticate the invitation acceptance
    * @throws IxApiError
    * @returns void if the invitation is successfully accepted
    */
   public accept_list_invitation = async (token: string): Promise<IxList> => {
-    const res = await ix_fetch(`${this.base_url}/lists/accept-invitation?`+ new URLSearchParams({ token: token }), {
+    const res = await ix_fetch(`${this.base_url}/lists/accept-invite?`+ new URLSearchParams({ token: token }), {
+      credentials: "include"
+    })
+
+    if (res.ok) {
+      return await res.json()
+    } else {
+      switch (res.status) {
+        case 404: {
+          throw new IxApiError(IxApiErrorResponse.LIST_INVITE_EXPIRED);
+        }
+        case 405: {
+          throw new IxApiError(IxApiErrorResponse.LIST_INVITE_EXPIRED);
+        }
+        default: {
+          throw new IxApiError(IxApiErrorResponse.UNKNOWN);
+        }
+      }
+    }
+  }
+
+  /**
+   * 
+   * @param token the token to authenticate the invitation acceptance
+   * @throws IxApiError
+   * @returns void if the invitation is successfully accepted
+   */
+  public accept_list_user_invitation = async (token: string): Promise<IxList> => {
+    const res = await ix_fetch(`${this.base_url}/lists/accept-user-invite?`+ new URLSearchParams({ token: token }), {
       credentials: "include"
     })
 
