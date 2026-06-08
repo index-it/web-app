@@ -4,6 +4,7 @@ export type IxList = {
   name: string;
   color: string;
   icon: string;
+  archived: boolean;
   public: boolean;
   created_at: number;
   edited_at?: number;

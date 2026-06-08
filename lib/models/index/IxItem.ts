@@ -5,6 +5,7 @@ export type IxItem = {
   user_id: string
   name: string
   link?: string
+  note?: string
   completed: boolean
   completed_at?: number
   created_at: number

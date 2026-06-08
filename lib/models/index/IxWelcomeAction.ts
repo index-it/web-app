@@ -1,6 +1,6 @@
 export const enum IxWelcomeAction {
-  LOGIN = 'login',
-  REGISTER = 'register'
+  REGISTER = 'register',
+  LOGIN = 'login'
 }
 
 export type IxWelcomeActionResponse = {

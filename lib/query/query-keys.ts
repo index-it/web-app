@@ -10,6 +10,3 @@ export const category_qk = (list_id: string, category_id: string) => categories_
 /// ITEMS ///
 export const items_qk = (list_id: string) => list_qk(list_id).concat('items');
 export const item_qk = (list_id: string, item_id: string) => items_qk(list_id).concat(item_id);
-
-/// ITEM CONTENT ///
-export const item_content_qk = (list_id: string, item_id: string) => item_qk(list_id, item_id).concat('content');
